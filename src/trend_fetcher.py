@@ -4,7 +4,7 @@ import requests
 from openai import OpenAI
 from datetime import datetime
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 
 
 def get_theme() -> tuple[str, list[str]]:
