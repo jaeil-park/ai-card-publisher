@@ -6,7 +6,7 @@ load_dotenv()
 from src.token_manager import check_and_refresh_tokens
 from src.trend_fetcher import get_content_type, collect_data, generate_card_content, CONTENT_META
 from src.card_generator import create_card
-from src.poster import run_posting
+from src.analytics import record_post, notify_posted
 
 
 def main():
@@ -30,7 +30,20 @@ def main():
     image_url = create_card(content)
 
     # 6. Instagram + Threads 게시
-    run_posting(image_url, content["caption"], content["hashtags"])
+    results = {}
+    from src.poster import post_instagram, post_threads
+    ig_result = post_instagram(image_url, content["caption"], content["hashtags"])
+    th_result = post_threads(image_url, content["caption"], content["hashtags"])
+    if ig_result.get("id"):
+        results["instagram"] = ig_result
+    if th_result.get("id"):
+        results["threads"]   = th_result
+
+    # 7. Analytics 기록 + Discord 즉시 알림
+    if results:
+        record_post(content_type, content["title"], results)
+        notify_posted(content_type, content["title"], list(results.keys()))
+
     print("🎉 All platforms posted successfully!")
 
 

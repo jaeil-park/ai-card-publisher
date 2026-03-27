@@ -1,0 +1,56 @@
+name: 📊 Analytics Report
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # 매일 07:00 KST — 일간 리포트
+    - cron: '0 22 * * 0'   # 매주 일요일 07:00 KST — 주간 ROI 리포트
+  workflow_dispatch:
+    inputs:
+      report_type:
+        description: 'daily 또는 weekly'
+        required: false
+        default: 'weekly'
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🔐 Load ENV
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: 📦 Install dependencies
+        run: pip install requests python-dotenv
+
+      - name: 📊 Run Daily Report
+        if: github.event.schedule == '0 22 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.report_type == 'daily')
+        run: |
+          python -c "
+          from dotenv import load_dotenv; load_dotenv()
+          from src.analytics import send_daily_report
+          send_daily_report()
+          "
+
+      - name: 📊 Run Weekly ROI Report
+        if: github.event.schedule == '0 22 * * 0' || (github.event_name == 'workflow_dispatch' && github.event.inputs.report_type == 'weekly')
+        run: |
+          python -c "
+          from dotenv import load_dotenv; load_dotenv()
+          from src.analytics import send_weekly_report
+          send_weekly_report()
+          "
+
+      - name: 💾 Commit updated analytics data
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add analytics/posts.json
+          git diff --staged --quiet || git commit -m "📊 analytics: update insights data [skip ci]"
+          git push
