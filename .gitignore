@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+*.png
+*.jpg
+.token
+.token_status.json
+venv/
+env/
