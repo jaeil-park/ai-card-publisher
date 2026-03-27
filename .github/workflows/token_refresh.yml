@@ -15,23 +15,22 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: 🔐 Load ENV
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: 📦 Install dependencies
         run: pip install requests PyNaCl python-dotenv
 
       - name: 🔑 Check & Refresh Tokens
         env:
-          INSTAGRAM_ACCESS_TOKEN:  ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-          THREADS_ACCESS_TOKEN:    ${{ secrets.THREADS_ACCESS_TOKEN }}
-          DISCORD_WEBHOOK_URL:     ${{ secrets.DISCORD_WEBHOOK_URL }}
-          GITHUB_TOKEN:            ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY:       ${{ github.repository }}
+          GITHUB_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python src/token_manager.py
 
       - name: 📢 Notify on failure
         if: failure()
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
+          source .env
           curl -s -X POST "$DISCORD_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d '{"content": "❌ [ai-card-publisher] Token 갱신 실패! GitHub Actions 확인 필요"}'
