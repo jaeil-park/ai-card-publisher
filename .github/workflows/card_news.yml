@@ -2,9 +2,12 @@ name: 📱 SNS Card News Auto Post
 
 on:
   schedule:
-    - cron: '0 0 * * *'     # 09:00 KST
-    - cron: '0 4 * * *'     # 13:00 KST
-    - cron: '0 11 * * *'    # 20:00 KST
+    - cron: '0 21 * * *'   # 06:00 KST ☀️  아침 AI 브리핑
+    - cron: '0 0 * * *'    # 09:00 KST 💻  개발 트렌드 (GitHub + HN)
+    - cron: '0 3 * * *'    # 12:00 KST 📊  시장 시황 (코인 + 증시)
+    - cron: '0 6 * * *'    # 15:00 KST 🛠️  AI 개발툴 팁
+    - cron: '0 9 * * *'    # 18:00 KST 🚀  AI 신제품 (Product Hunt)
+    - cron: '0 12 * * *'   # 21:00 KST 🧠  AI 비서 실전 팁
   workflow_dispatch:
 
 jobs:
