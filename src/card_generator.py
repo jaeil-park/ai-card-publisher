@@ -71,19 +71,36 @@ def overlay_text(img: Image.Image, title: str, summary: str) -> Image.Image:
     return img.convert("RGB")
 
 
-def upload_to_imgbb(image: Image.Image) -> str:
-    """imgbb에 업로드 후 Public URL 반환 (Threads API 필수 요건)"""
+def upload_image(image: Image.Image) -> str:
+    """Cloudinary에 업로드 후 Public URL 반환 (Instagram/Threads API 호환)"""
+    import hashlib, time
+
     buffer = BytesIO()
     image.save(buffer, format="PNG")
     b64 = base64.b64encode(buffer.getvalue()).decode()
 
+    cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME", "")
+    api_key    = os.environ.get("CLOUDINARY_API_KEY", "")
+    api_secret = os.environ.get("CLOUDINARY_API_SECRET", "")
+
+    if not all([cloud_name, api_key, api_secret]):
+        raise ValueError("CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET 미설정")
+
+    timestamp = str(int(time.time()))
+    signature = hashlib.sha1(f"timestamp={timestamp}{api_secret}".encode()).hexdigest()
+
     res = requests.post(
-        "https://api.imgbb.com/1/upload",
-        data={"key": os.environ["IMGBB_API_KEY"], "image": b64},
-        timeout=30
+        f"https://api.cloudinary.com/v1_1/{cloud_name}/image/upload",
+        data={
+            "file":      f"data:image/png;base64,{b64}",
+            "timestamp": timestamp,
+            "api_key":   api_key,
+            "signature": signature,
+        },
+        timeout=60
     )
     res.raise_for_status()
-    url = res.json()["data"]["url"]
+    url = res.json()["secure_url"]
     print(f"✅ Image uploaded: {url}")
     return url
 
@@ -92,4 +109,4 @@ def create_card(content: dict) -> str:
     """전체 카드 생성 파이프라인 → Public URL 반환"""
     bg   = generate_background(content["dalle_prompt"])
     card = overlay_text(bg, content["title"], content["summary"])
-    return upload_to_imgbb(card)
+    return upload_image(card)
