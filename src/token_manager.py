@@ -172,11 +172,14 @@ def check_and_refresh_tokens():
         print("🔄 Instagram 토큰 갱신 시작...")
         try:
             ig_result = refresh_instagram_token(ig_token)
-            update_github_secret("INSTAGRAM_ACCESS_TOKEN", ig_result["access_token"])
             status["instagram_expires_at"]      = ig_result["expires_at"]
             status["instagram_last_refreshed"]  = datetime.now(timezone.utc).isoformat()
             messages.append(f"✅ Instagram 토큰 갱신 완료 ({ig_result['expires_in'] // 86400}일 연장)")
             updated = True
+            try:
+                update_github_secret("INSTAGRAM_ACCESS_TOKEN", ig_result["access_token"])
+            except Exception as e:
+                print(f"⚠️ GitHub Secret 업데이트 실패 (수동 갱신 필요): {e}")
         except Exception as e:
             messages.append(f"❌ Instagram 토큰 갱신 실패: {e}")
             print(f"❌ Instagram 갱신 실패: {e}")
@@ -188,15 +191,20 @@ def check_and_refresh_tokens():
 
     print(f"🧵 Threads 토큰 만료까지: {th_days_left}일")
 
-    if th_days_left <= REFRESH_THRESHOLD_DAYS and th_token:
+    if not th_token:
+        print("⏭️  Threads 토큰 미설정 - 갱신 스킵")
+    elif th_days_left <= REFRESH_THRESHOLD_DAYS:
         print("🔄 Threads 토큰 갱신 시작...")
         try:
             th_result = refresh_threads_token(th_token)
-            update_github_secret("THREADS_ACCESS_TOKEN", th_result["access_token"])
             status["threads_expires_at"]     = th_result["expires_at"]
             status["threads_last_refreshed"] = datetime.now(timezone.utc).isoformat()
             messages.append(f"✅ Threads 토큰 갱신 완료 ({th_result['expires_in'] // 86400}일 연장)")
             updated = True
+            try:
+                update_github_secret("THREADS_ACCESS_TOKEN", th_result["access_token"])
+            except Exception as e:
+                print(f"⚠️ GitHub Secret 업데이트 실패 (수동 갱신 필요): {e}")
         except Exception as e:
             messages.append(f"❌ Threads 토큰 갱신 실패: {e}")
             print(f"❌ Threads 갱신 실패: {e}")

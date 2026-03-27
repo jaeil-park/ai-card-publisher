@@ -17,6 +17,8 @@ def post_instagram(image_url: str, caption: str) -> dict:
         params={"image_url": image_url, "caption": caption, "access_token": token},
         timeout=30
     )
+    if not res.ok:
+        print(f"❌ Instagram API 오류: {res.status_code} - {res.text}")
     res.raise_for_status()
     container_id = res.json()["id"]
     print(f"📸 Instagram container: {container_id}")
