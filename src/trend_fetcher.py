@@ -17,12 +17,12 @@ CONTENT_SCHEDULE = {
 }
 
 CONTENT_META = {
-    "morning_briefing": {"emoji": "☀️", "label": "아침 AI 브리핑",  "bg_style": "bright sunrise digital newsroom, blue gold gradient"},
-    "tech_trend":       {"emoji": "💻", "label": "개발 트렌드",     "bg_style": "dark coding terminal, green matrix neon, github vibes"},
-    "market_update":    {"emoji": "📊", "label": "시장 시황",       "bg_style": "financial trading floor, dark blue red candlestick chart"},
-    "ai_tools":         {"emoji": "🛠️", "label": "AI 개발툴",      "bg_style": "futuristic IDE interface, purple cyan glow, tool icons"},
-    "product_hunt":     {"emoji": "🚀", "label": "AI 신제품",       "bg_style": "product launch stage, orange white spotlight, startup energy"},
-    "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁",      "bg_style": "mind map neural network, teal purple gradient, productivity"},
+    "morning_briefing": {"emoji": "☀️", "label": "아침 AI 브리핑",  "bg_style": "candid photography of a coffee cup on a desk, warm morning sunlight streaming through a window, blurred background"},
+    "tech_trend":       {"emoji": "💻", "label": "개발 트렌드",     "bg_style": "photorealistic close-up shot of a laptop keyboard, shallow depth of field, natural room lighting"},
+    "market_update":    {"emoji": "📊", "label": "시장 시황",       "bg_style": "authentic photo of a financial newspaper on a wooden table, soft natural light"},
+    "ai_tools":         {"emoji": "🛠️", "label": "AI 개발툴",      "bg_style": "candid shot of a clean modern desk setup with a monitor, raw unedited photography"},
+    "product_hunt":     {"emoji": "🚀", "label": "AI 신제품",       "bg_style": "real-life macro photography of a glowing smartphone screen on a table, soft focus, authentic"},
+    "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁",      "bg_style": "unretouched photo of a notebook and pen next to a tablet, natural ambient lighting"},
 }
 
 
@@ -263,7 +263,7 @@ def generate_card_content(content_type: str, data: dict) -> dict:
   "summary": "핵심 내용 3줄 (줄바꿈 \\n, 각 줄 30자 이내, 수치/구체성 포함)",
   "caption": "인스타그램 캡션 (이모지 포함, 250자 이내, 마지막 줄은 반드시 CTA)",
   "hashtags": "관련 해시태그 20개 (공백 구분, #AI #인공지능 포함)",
-  "dalle_prompt": "배경 이미지 프롬프트 (영문, '{meta['bg_style']}' 스타일 참고, 100자 이내)"
+  "dalle_prompt": "배경 이미지 프롬프트 (영문, '{meta['bg_style']}' 스타일 참고, 이모지 절대 제외, 100자 이내)"
 }}"""
 
     resp = client.chat.completions.create(

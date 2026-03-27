@@ -24,11 +24,30 @@ def get_font_path(bold: bool = False) -> str | None:
         return f"/Library/Fonts/{font_name}"
 
 
+def wrap_text_by_pixels(text: str, font, max_width: int) -> list[str]:
+    """폰트 크기를 기준으로 지정된 픽셀 너비를 넘어가지 않게 자동 줄바꿈합니다."""
+    lines = []
+    for paragraph in text.split("\n"):
+        current_line = ""
+        for char in paragraph:
+            test_line = current_line + char
+            # Pillow의 폰트 너비 계산 메서드 사용
+            length = font.getlength(test_line) if hasattr(font, 'getlength') else font.getbbox(test_line)[2]
+            if length <= max_width:
+                current_line = test_line
+            else:
+                lines.append(current_line)
+                current_line = char
+        if current_line:
+            lines.append(current_line)
+    return lines
+
+
 def generate_background(dalle_prompt: str) -> Image.Image:
     """DALL-E 3으로 배경 이미지 생성"""
     response = client.images.generate(
         model="dall-e-3",
-        prompt=dalle_prompt + ", card news layout, dark futuristic background, neon accent, modern minimal UI",
+        prompt=dalle_prompt + ", authentic photorealistic photography, shot on 35mm lens, natural lighting, raw unedited, shallow depth of field, empty space for text, NO 3D render, NO UI elements",
         size="1024x1024",
         quality="standard",
         n=1
@@ -73,14 +92,25 @@ def overlay_text(img: Image.Image, title: str, summary: str) -> Image.Image:
     date_w    = date_bbox[2] - date_bbox[0]
     draw.text((img.width - date_w - 16, 14), kst_date, font=font_badge, fill=(200, 200, 200, 220))
 
-    # 제목 (노란색 강조)
-    draw.text((50, int(img.height * 0.58)), title,
-              font=font_title, fill=(255, 220, 0, 255))
+    # 텍스트 최대 너비 설정 (양옆 50px씩 = 100px 제외)
+    max_text_width = img.width - 100
+    
+    # 자동 줄바꿈 계산
+    wrapped_title = wrap_text_by_pixels(title, font_title, max_text_width)
+    wrapped_summary = wrap_text_by_pixels(summary, font_body, max_text_width)
 
-    # 본문 3줄 (흰색)
-    for i, line in enumerate(summary.split("\n")[:3]):
-        draw.text((50, int(img.height * 0.68) + i * 52), line,
-                  font=font_body, fill=(255, 255, 255, 230))
+    # 제목 그리기 (최대 2줄까지만, Y축 위치 동적 이동)
+    current_y = int(img.height * 0.58)
+    for line in wrapped_title[:2]:
+        draw.text((50, current_y), line, font=font_title, fill=(255, 220, 0, 255))
+        current_y += 65  # 제목 줄간격
+
+    current_y += 15  # 제목과 본문 사이의 여백 추가
+
+    # 본문 그리기 (최대 3줄)
+    for line in wrapped_summary[:3]:
+        draw.text((50, current_y), line, font=font_body, fill=(255, 255, 255, 230))
+        current_y += 52  # 본문 줄간격
 
     # 하단 우: AI Generated 워터마크
     wm_text  = "✨ AI Generated Content"
