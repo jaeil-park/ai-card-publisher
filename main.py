@@ -23,7 +23,9 @@ def main():
     data = collect_data(content_type)
 
     # 4. GPT로 카드 콘텐츠 생성
-    content = generate_card_content(content_type, data)
+    news   = data.get("news", data.get("products", data.get("tools_news", data.get("github", []))))
+    crypto = data.get("crypto", [])
+    content = generate_card_content(theme=meta["label"], news=news, crypto=crypto)
     print(f"📝 Title: {content['title']}")
 
     # 5. 카드 이미지 생성 + Cloudinary 업로드

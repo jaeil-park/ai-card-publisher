@@ -242,33 +242,81 @@ CTA: "이 팁 써보셨나요? 결과를 댓글로 공유해주세요 🧠"
 }
 
 
-def generate_card_content(content_type: str, data: dict) -> dict:
-    """GPT-4o로 콘텐츠 타입에 맞는 카드뉴스 생성"""
-    meta     = CONTENT_META[content_type]
-    kst_date = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y.%m.%d %H:%M")
-    prompt   = PROMPTS[content_type]
+def generate_card_content(theme: str, news: list, crypto: list) -> dict:
+    """GPT-4o로 팩트 기반 카드뉴스 콘텐츠 생성"""
 
-    system_msg = f"""당신은 SNS 바이럴 카드뉴스 전문 에디터입니다.
-콘텐츠 타입: {meta['label']} {meta['emoji']}
-날짜: {kst_date} KST
+    # 중복 단어 제거 후처리 함수
+    def remove_duplicate_words(content: dict) -> dict:
+        import re
+        from collections import Counter
 
-{prompt}
+        # 전체 텍스트 합치기
+        full_text = " ".join([
+            content.get("title", ""),
+            content.get("summary", ""),
+            content.get("caption", "")
+        ])
 
-수집 데이터:
-{json.dumps(data, ensure_ascii=False, indent=2)}
+        # 2글자 이상 단어 추출
+        words = re.findall(r'[가-힣a-zA-Z]{2,}', full_text)
+        word_count = Counter(words)
 
-반드시 아래 JSON 형식으로만 응답 (마크다운·설명 없이 JSON만):
+        # 3회 이상 반복 단어 탐지 후 경고 출력
+        duplicates = [w for w, c in word_count.items() if c >= 3]
+        if duplicates:
+            print(f"⚠️ 중복 단어 감지: {duplicates}")
+
+        return content
+
+    prompt = f"""
+당신은 팩트 기반 SNS 카드뉴스 전문 에디터입니다.
+아래 실제 데이터를 분석하여 사실에 근거한 카드뉴스 콘텐츠를 생성하세요.
+
+[입력 데이터]
+테마: {theme}
+AI 뉴스: {json.dumps(news, ensure_ascii=False)}
+코인 시황: {json.dumps(crypto, ensure_ascii=False)}
+
+[콘텐츠 작성 규칙 - 반드시 준수]
+1. 제목 규칙:
+   - 반드시 구체적 수치/팩트 포함 (예: "BTC 9.2% 급등", "GPT-5 출시")
+   - 15자 이내, 클릭을 유발하는 임팩트 있는 표현
+   - 추상적/모호한 표현 금지
+
+2. 본문 3줄 규칙:
+   - 줄 1: 핵심 사실 + 구체적 수치
+   - 줄 2: 배경/원인 + 관련 데이터
+   - 줄 3: 전망/영향 + 핵심 포인트
+   - 각 줄은 서로 다른 내용, 동일 단어 반복 금지
+   - 각 줄 30자 이내
+
+3. 중복 단어 금지 규칙:
+   - 제목, 본문, 캡션 전체에서 동일 단어 2회 이상 사용 금지
+   - 유사 표현 통일: AI/인공지능/AI기술 → AI 하나만 사용
+   - 코인/암호화폐/가상화폐 → 코인 하나만 사용
+
+4. DALL-E 이미지 프롬프트 규칙:
+   - 추상적/그래픽 디자인 금지
+   - 주제와 직접 연관된 사실적 장면 묘사
+   - 실제 뉴스 사진처럼 photorealistic 스타일
+   - 예시:
+     * BTC 상승 → "Bitcoin gold coin on financial chart, photorealistic, dark background"
+     * AI 뉴스 → "Modern AI robot in data center server room, photorealistic, cinematic lighting"
+     * 금리 인하 → "Federal Reserve building exterior, photorealistic, wide angle shot"
+
+반드시 아래 JSON 형식으로만 응답 (마크다운, 설명 없이 JSON만):
 {{
-  "title": "카드 제목 (15자 이내, 임팩트 있게, {meta['emoji']} 포함)",
-  "summary": "핵심 내용 3줄 (줄바꿈 \\n, 각 줄 30자 이내, 수치/구체성 포함)",
-  "caption": "인스타그램 캡션 (이모지 포함, 250자 이내, 마지막 줄은 반드시 CTA)",
-  "hashtags": "관련 해시태그 20개 (공백 구분, #AI #인공지능 포함)",
-  "dalle_prompt": "배경 이미지 프롬프트 (영문, '{meta['bg_style']}' 스타일 참고, 이모지 절대 제외, 100자 이내)"
-}}"""
-
+  "title": "팩트+수치 포함 제목 (15자 이내)",
+  "summary": "줄1: 핵심사실+수치\\n줄2: 배경+데이터\\n줄3: 전망+포인트",
+  "caption": "이모지 포함 캡션 300자 이내 (본문과 다른 표현 사용)",
+  "hashtags": "#팩트 #수치 포함 해시태그 10개",
+  "dalle_prompt": "photorealistic news photo style, [주제 직접 연관 장면], cinematic lighting, high detail, --no text --no graphics --no abstract"
+}}
+"""
     resp = client.chat.completions.create(
         model="gpt-4o",
-        messages=[{"role": "user", "content": system_msg}],
+        messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"}
     )
-    return json.loads(resp.choices[0].message.content)
+    content = json.loads(resp.choices[0].message.content)
+    return remove_duplicate_words(content)
