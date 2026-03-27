@@ -3,6 +3,7 @@ import base64
 import platform
 import requests
 from io import BytesIO
+from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
 from openai import OpenAI
 
@@ -11,18 +12,15 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 
 def get_font_path(bold: bool = False) -> str | None:
     """OS별 한글 폰트 경로 자동 감지"""
-    system = platform.system()
+    system    = platform.system()
     font_name = "NanumGothicBold.ttf" if bold else "NanumGothic.ttf"
 
     if system == "Linux":
-        # GitHub Actions Ubuntu 환경
         return f"/usr/share/fonts/truetype/nanum/{font_name}"
     elif system == "Windows":
-        import os as _os
         path = f"C:\\Windows\\Fonts\\{font_name}"
-        return path if _os.path.exists(path) else None
+        return path if os.path.exists(path) else None
     else:
-        # macOS
         return f"/Library/Fonts/{font_name}"
 
 
@@ -40,24 +38,40 @@ def generate_background(dalle_prompt: str) -> Image.Image:
 
 
 def overlay_text(img: Image.Image, title: str, summary: str) -> Image.Image:
-    """Pillow로 한글 텍스트 오버레이"""
-    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    """Pillow로 한글 텍스트 오버레이 + AI 워터마크"""
+    # 하단 어두운 그라데이션 패널
+    overlay      = Image.new("RGBA", img.size, (0, 0, 0, 0))
     overlay_draw = ImageDraw.Draw(overlay)
     overlay_draw.rectangle(
         [0, int(img.height * 0.55), img.width, img.height],
         fill=(0, 0, 0, 185)
     )
-    img = Image.alpha_composite(img, overlay)
+    # 상단 반투명 배지 배경
+    overlay_draw.rectangle(
+        [0, 0, img.width, 56],
+        fill=(0, 0, 0, 140)
+    )
+    img  = Image.alpha_composite(img, overlay)
     draw = ImageDraw.Draw(img)
 
     try:
-        title_path = get_font_path(bold=True)
-        body_path  = get_font_path(bold=False)
-        font_title = ImageFont.truetype(title_path, 52) if title_path else ImageFont.load_default()
-        font_body  = ImageFont.truetype(body_path, 30)  if body_path  else ImageFont.load_default()
+        title_path  = get_font_path(bold=True)
+        body_path   = get_font_path(bold=False)
+        font_title  = ImageFont.truetype(title_path, 52) if title_path else ImageFont.load_default()
+        font_body   = ImageFont.truetype(body_path, 30)  if body_path  else ImageFont.load_default()
+        font_badge  = ImageFont.truetype(body_path, 22)  if body_path  else ImageFont.load_default()
     except Exception:
-        font_title = ImageFont.load_default()
-        font_body  = ImageFont.load_default()
+        font_title = font_body = font_badge = ImageFont.load_default()
+
+    kst_date = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y.%m.%d")
+
+    # 상단 좌: 🤖 AI DAILY 배지
+    draw.text((16, 14), "🤖 AI DAILY", font=font_badge, fill=(80, 220, 255, 255))
+
+    # 상단 우: 날짜
+    date_bbox = draw.textbbox((0, 0), kst_date, font=font_badge)
+    date_w    = date_bbox[2] - date_bbox[0]
+    draw.text((img.width - date_w - 16, 14), kst_date, font=font_badge, fill=(200, 200, 200, 220))
 
     # 제목 (노란색 강조)
     draw.text((50, int(img.height * 0.58)), title,
@@ -67,6 +81,13 @@ def overlay_text(img: Image.Image, title: str, summary: str) -> Image.Image:
     for i, line in enumerate(summary.split("\n")[:3]):
         draw.text((50, int(img.height * 0.68) + i * 52), line,
                   font=font_body, fill=(255, 255, 255, 230))
+
+    # 하단 우: AI Generated 워터마크
+    wm_text  = "✨ AI Generated Content"
+    wm_bbox  = draw.textbbox((0, 0), wm_text, font=font_badge)
+    wm_w     = wm_bbox[2] - wm_bbox[0]
+    draw.text((img.width - wm_w - 16, img.height - 30), wm_text,
+              font=font_badge, fill=(160, 160, 160, 180))
 
     return img.convert("RGB")
 
