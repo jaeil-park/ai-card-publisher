@@ -8,22 +8,22 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 
 # ── 콘텐츠 타입 스케줄 (KST 기준) ──────────────────────────
 CONTENT_SCHEDULE = {
-    6:  "morning_briefing",  # ☀️ 아침 AI 뉴스 브리핑
-    9:  "tech_trend",        # 💻 GitHub + HN 개발 트렌드
-    12: "market_update",     # 📊 코인 + 글로벌 증시
-    15: "ai_tools",          # 🛠️ AI 개발툴 비교/팁
-    18: "product_hunt",      # 🚀 AI 신제품 발견
+    6:  "morning_briefing",  # ☀️ 아침 종합 뉴스 브리핑 (AI + 테크 + 경제)
+    9:  "bigtech_news",      # 🏢 빅테크 IT 뉴스 + 원문 링크 공유
+    12: "market_update",     # 📊 코인 + 글로벌 증시 + 환율
+    15: "startup_trend",     # 🦄 스타트업/VC 투자 + 신기술 트렌드
+    18: "product_hunt",      # 🚀 테크/AI 신제품 발견
     21: "ai_tips",           # 🧠 AI 비서 실전 팁
 }
 
 CONTENT_META = {
-    "morning_briefing": {"emoji": "☀️", "label": "아침 AI 브리핑"},
-    "tech_trend":       {"emoji": "💻", "label": "개발 트렌드"},
+    "morning_briefing": {"emoji": "☀️", "label": "아침 종합 브리핑"},
+    "bigtech_news":     {"emoji": "🏢", "label": "빅테크 IT 뉴스"},
     "market_update":    {"emoji": "📊", "label": "시장 시황"},
-    "ai_tools":         {"emoji": "🛠️", "label": "AI 개발툴"},
-    "product_hunt":     {"emoji": "🚀", "label": "AI 신제품"},
+    "startup_trend":    {"emoji": "🦄", "label": "스타트업 트렌드"},
+    "product_hunt":     {"emoji": "🚀", "label": "테크 신제품"},
     "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁"},
-    "weekly_review":    {"emoji": "📅", "label": "주간 AI 정리"},
+    "weekly_review":    {"emoji": "📅", "label": "주간 핵심 정리"},
 }
 
 
@@ -49,7 +49,7 @@ def get_content_type() -> str:
 # ── 데이터 수집 함수들 ─────────────────────────────────────
 
 def fetch_ai_news() -> list[dict]:
-    """Serper API: AI 최신 뉴스"""
+    """Serper API: AI 최신 뉴스 (링크 포함)"""
     try:
         res = requests.post(
             "https://google.serper.dev/news",
@@ -58,11 +58,14 @@ def fetch_ai_news() -> list[dict]:
             timeout=10
         )
         res.raise_for_status()
-        return [{"title": i["title"], "snippet": i.get("snippet", "")}
-                for i in res.json().get("news", [])]
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
     except Exception as e:
         print(f"⚠️ AI 뉴스 수집 실패: {e}")
-        return [{"title": "AI 트렌드", "snippet": "최신 AI 동향을 확인하세요"}]
+        return [{"title": "AI 트렌드", "snippet": "최신 AI 동향을 확인하세요", "link": ""}]
 
 
 def fetch_github_trending() -> list[dict]:
@@ -170,7 +173,7 @@ def fetch_ai_tools_news() -> list[dict]:
 
 
 def fetch_product_hunt() -> list[dict]:
-    """Serper: Product Hunt AI 신제품"""
+    """Serper: 테크/AI 신제품 (링크 포함)"""
     try:
         res = requests.post(
             "https://google.serper.dev/search",
@@ -179,10 +182,52 @@ def fetch_product_hunt() -> list[dict]:
             timeout=10
         )
         res.raise_for_status()
-        return [{"title": i["title"], "snippet": i.get("snippet", "")}
-                for i in res.json().get("organic", [])]
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""), "link": i.get("link", "")}
+            for i in res.json().get("organic", [])
+        ]
     except Exception as e:
         print(f"⚠️ Product Hunt 수집 실패: {e}")
+        return []
+
+
+def fetch_bigtech_news() -> list[dict]:
+    """Serper: 빅테크(Apple/Google/Meta/MS/Amazon/Nvidia/TSMC) IT 뉴스 + 링크"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": "Apple Google Meta Microsoft Amazon Nvidia TSMC 빅테크 IT 뉴스", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ 빅테크 뉴스 수집 실패: {e}")
+        return []
+
+
+def fetch_startup_trend() -> list[dict]:
+    """Serper: 스타트업 투자/VC + 신기술 트렌드 + 링크"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": "스타트업 투자 시리즈 Series 유니콘 VC AI 신기술 2025", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ 스타트업 트렌드 수집 실패: {e}")
         return []
 
 
@@ -210,13 +255,20 @@ def collect_data(content_type: str) -> dict:
     """콘텐츠 타입에 맞는 데이터 수집"""
     print(f"📡 데이터 수집 중: {content_type}")
     if content_type == "morning_briefing":
-        return {"news": fetch_ai_news()}
-    elif content_type == "tech_trend":
-        return {"github": fetch_github_trending(), "hn": fetch_hacker_news()}
+        # 종합 브리핑: AI 뉴스 + 코인 시황 + 빅테크 헤드라인
+        return {
+            "news":   fetch_ai_news(),
+            "crypto": fetch_crypto()[:2],
+            "bigtech": fetch_bigtech_news()[:2],
+        }
+    elif content_type == "bigtech_news":
+        # 빅테크 IT 뉴스 (링크 포함 → Threads에서 공유)
+        return {"news": fetch_bigtech_news()}
     elif content_type == "market_update":
         return {"crypto": fetch_crypto(), "stock": fetch_stock_market()}
-    elif content_type == "ai_tools":
-        return {"tools_news": fetch_ai_tools_news(), "hn": fetch_hacker_news()}
+    elif content_type == "startup_trend":
+        # 스타트업/VC 트렌드 + GitHub 급성장 레포
+        return {"news": fetch_startup_trend(), "github": fetch_github_trending()[:3]}
     elif content_type == "product_hunt":
         return {"products": fetch_product_hunt(), "news": fetch_ai_news()[:2]}
     elif content_type == "ai_tips":

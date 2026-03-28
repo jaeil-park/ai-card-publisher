@@ -37,10 +37,19 @@ def main():
     image_urls = generate_carousel(content)
     print(f"🖼️  캐러셀 {len(image_urls)}장 생성 완료")
 
-    # 6. Instagram + Threads 캐러셀 게시
+    # 6. 뉴스 링크 추출 (Threads 전용 - 클릭 가능한 링크 지원)
+    # Instagram은 피드에서 링크가 클릭 불가 → 캡션 그대로 사용
+    LINK_SHARE_TYPES = {"bigtech_news", "startup_trend", "product_hunt", "morning_briefing"}
+    source_links = [n["link"] for n in news if n.get("link")][:2]
+    threads_caption = content["caption"]
+    if content_type in LINK_SHARE_TYPES and source_links:
+        threads_caption += "\n\n[ 관련 기사 ]\n" + "\n".join(source_links)
+        print(f"🔗 Threads 링크 추가: {len(source_links)}개")
+
+    # 7. Instagram + Threads 캐러셀 게시
     results = {}
     ig_result = post_instagram_carousel(image_urls, content["caption"], content["hashtags"])
-    th_result = post_threads_carousel(image_urls, content["caption"], content["hashtags"])
+    th_result = post_threads_carousel(image_urls, threads_caption, content["hashtags"])
     if ig_result.get("id"):
         results["instagram"] = ig_result
     if th_result.get("id"):
