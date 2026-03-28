@@ -47,9 +47,21 @@ def main():
         print(f"🔗 Threads 링크 추가: {len(source_links)}개")
 
     # 7. Instagram + Threads 캐러셀 게시
+    _TOPIC_MAP = {
+        "market_overview":                    "FINANCE",
+        "bigtech_news":                       "TECHNOLOGY",
+        "startup_trend":                      "TECHNOLOGY",
+        "ai_tips":                            "ARTIFICIAL_INTELLIGENCE",
+        "vibe_coding":                        "ARTIFICIAL_INTELLIGENCE",
+        "morning_briefing":                   "ARTIFICIAL_INTELLIGENCE",
+        "product_hunt":                       "ARTIFICIAL_INTELLIGENCE",
+        "weekly_review":                      "ARTIFICIAL_INTELLIGENCE",
+    }
+    topic_tag = _TOPIC_MAP.get(content_type, "ARTIFICIAL_INTELLIGENCE")
+
     results = {}
     ig_result = post_instagram_carousel(image_urls, content["caption"], content["hashtags"])
-    th_result = post_threads_carousel(image_urls, threads_caption, content["hashtags"])
+    th_result = post_threads_carousel(image_urls, threads_caption, content["hashtags"], topic_tag)
     if ig_result.get("id"):
         results["instagram"] = ig_result
     if th_result.get("id"):

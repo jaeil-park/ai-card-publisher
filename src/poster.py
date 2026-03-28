@@ -91,12 +91,13 @@ def post_instagram_carousel(image_urls: list[str], caption: str, hashtags: str) 
     return result
 
 
-def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str) -> dict:
+def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, topic_tag: str = "") -> dict:
     """Threads Graph API v1.0 캐러셀(슬라이드) 게시
 
     Instagram 가이드라인 반영:
     - 슬라이드 형식으로 더 많은 도달 확보
     - 해시태그 첫 댓글 분리
+    - topic_tag: ARTIFICIAL_INTELLIGENCE / TECHNOLOGY / FINANCE
     """
     user_id = os.environ.get("THREADS_USER_ID", "")
     token   = os.environ.get("THREADS_ACCESS_TOKEN", "")
@@ -130,14 +131,18 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str) ->
         time.sleep(2)
 
     # 2. 캐러셀 컨테이너 생성
+    carousel_params = {
+        "media_type":   "CAROUSEL",
+        "children":     ",".join(child_ids),
+        "text":         full_caption,
+        "access_token": token,
+    }
+    if topic_tag:
+        carousel_params["topic_tag"] = topic_tag
+        print(f"🏷️  Threads topic_tag: {topic_tag}")
     res = requests.post(
         f"https://graph.threads.net/v1.0/{user_id}/threads",
-        params={
-            "media_type":   "CAROUSEL",
-            "children":     ",".join(child_ids),
-            "text":         full_caption,
-            "access_token": token,
-        },
+        params=carousel_params,
         timeout=30
     )
     if not res.ok:
