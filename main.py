@@ -39,7 +39,7 @@ def main():
 
     # 6. 뉴스 링크 추출 (Threads 전용 - 클릭 가능한 링크 지원)
     # Instagram은 피드에서 링크가 클릭 불가 → 캡션 그대로 사용
-    LINK_SHARE_TYPES = {"bigtech_news", "startup_trend", "product_hunt", "morning_briefing"}
+    LINK_SHARE_TYPES = {"bigtech_news", "startup_trend", "product_hunt", "morning_briefing", "vibe_coding"}
     source_links = [n["link"] for n in news if n.get("link")][:2]
     threads_caption = content["caption"]
     if content_type in LINK_SHARE_TYPES and source_links:

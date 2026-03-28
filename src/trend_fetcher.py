@@ -23,6 +23,7 @@ CONTENT_META = {
     "startup_trend":    {"emoji": "🦄", "label": "스타트업 트렌드"},
     "product_hunt":     {"emoji": "🚀", "label": "테크 신제품"},
     "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁"},
+    "vibe_coding":      {"emoji": "☕", "label": "바이브코딩 티타임"},
     "weekly_review":    {"emoji": "📅", "label": "주간 핵심 정리"},
 }
 
@@ -31,14 +32,23 @@ CONTENT_META = {
 
 def get_content_type() -> str:
     """현재 KST 시각 기준으로 콘텐츠 타입 자동 결정
-    일요일 20:00 KST: 주간 AI 하이라이트 정리 (weekly_review)
+
+    21:00 슬롯 로테이션:
+      - 월/수/금 → ai_tips (AI 비서 실전 팁)
+      - 화/목/토 → vibe_coding (바이브코딩 티타임)
+      - 일 20:00  → weekly_review (한 주 핵심 정리)
     """
     now     = datetime.now(timezone.utc) + timedelta(hours=9)
     hour    = now.hour
-    weekday = now.weekday()  # 0=월, 6=일
+    weekday = now.weekday()  # 0=월 … 6=일
 
+    # 일요일 20:00: 주간 정리
     if weekday == 6 and hour == 20:
         return "weekly_review"
+
+    # 21:00 슬롯: 화(1)/목(3)/토(5) → 바이브코딩, 나머지 → AI 팁
+    if hour >= 21:
+        return "vibe_coding" if weekday in (1, 3, 5) else "ai_tips"
 
     for h in sorted(CONTENT_SCHEDULE.keys(), reverse=True):
         if hour >= h:
@@ -233,6 +243,26 @@ def fetch_startup_trend() -> list[dict]:
 
 # ── 콘텐츠 타입별 데이터 수집 ─────────────────────────────
 
+def fetch_vibe_coding_news() -> list[dict]:
+    """Serper: 바이브코딩 + AI 코딩 도구 최신 화제 + 링크"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": "vibe coding Claude Code Cursor Windsurf AI coding 바이브코딩 2025", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ 바이브코딩 뉴스 수집 실패: {e}")
+        return []
+
+
 def fetch_weekly_summary() -> list[dict]:
     """이번 주 AI 핵심 뉴스 (Serper 주간 검색)"""
     try:
@@ -273,6 +303,13 @@ def collect_data(content_type: str) -> dict:
         return {"products": fetch_product_hunt(), "news": fetch_ai_news()[:2]}
     elif content_type == "ai_tips":
         return {"news": fetch_ai_news()[:3]}
+    elif content_type == "vibe_coding":
+        # 바이브코딩 뉴스 + HN 커뮤니티 반응 + GitHub 핫 레포
+        return {
+            "news":   fetch_vibe_coding_news(),
+            "hn":     fetch_hacker_news(),
+            "github": fetch_github_trending()[:2],
+        }
     elif content_type == "weekly_review":
         return {
             "news":   fetch_weekly_summary(),
@@ -313,6 +350,23 @@ def generate_card_content(theme: str, news: list, crypto: list) -> dict:
             print(f"⚠️ 중복 단어 감지: {duplicates}")
         return content
 
+    # 테마별 특별 톤/형식 지침
+    THEME_GUIDES: dict[str, str] = {
+        "바이브코딩 티타임": """
+[바이브코딩 티타임 특별 규칙]
+- 전체 톤: 개발자 친구와 커피 마시며 나누는 가벼운 대화체
+- stat: 시간 절약/생산성 수치 우선 (예: "10배 속도", "3분 완성", "100줄 절약")
+- slide2 포인트: 반드시 실제 써먹을 수 있는 프롬프트 예시 1개 이상 포함
+  형식: '프롬프트: "..."' 또는 '팁: ...'
+- slide3 cta_question: 참여 유도 질문 (예: "바이브코딩 써본 분? 경험 공유해주세요!")
+- dalle_prompt: cozy coding setup, coffee cup next to laptop, warm ambient light,
+  casual developer workspace, photorealistic
+- caption: 친근하고 공감 가는 톤, "저도 써봤는데..." 같은 1인칭 경험 느낌
+""",
+    }
+
+    theme_extra = THEME_GUIDES.get(theme, "")
+
     prompt = f"""
 당신은 Instagram 성장 전문 카드뉴스 에디터입니다.
 슬라이드(캐러셀) 3장 구성으로 팩트 기반 카드뉴스를 만드세요.
@@ -323,7 +377,7 @@ Instagram 공식 가이드라인:
 - 공감/충분히 공유될 수 있는 콘텐츠 제작
 - 낚시성/오해 소지 있는 표현 절대 금지
 - 댓글 참여 유도로 깊은 참여(engagement) 집중
-
+{theme_extra}
 [입력 데이터]
 테마: {theme}
 AI 뉴스: {json.dumps(news, ensure_ascii=False)}
