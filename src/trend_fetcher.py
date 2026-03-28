@@ -17,14 +17,18 @@ CONTENT_SCHEDULE = {
 }
 
 CONTENT_META = {
-    "morning_briefing": {"emoji": "☀️", "label": "아침 종합 브리핑"},
-    "bigtech_news":     {"emoji": "🏢", "label": "빅테크 IT 뉴스"},
-    "market_update":    {"emoji": "📊", "label": "시장 시황"},
-    "startup_trend":    {"emoji": "🦄", "label": "스타트업 트렌드"},
-    "product_hunt":     {"emoji": "🚀", "label": "테크 신제품"},
-    "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁"},
-    "vibe_coding":      {"emoji": "☕", "label": "바이브코딩 티타임"},
-    "weekly_review":    {"emoji": "📅", "label": "주간 핵심 정리"},
+    "morning_briefing":  {"emoji": "☀️", "label": "아침 종합 브리핑"},
+    "bigtech_news":      {"emoji": "🏢", "label": "빅테크 IT 뉴스"},
+    "market_update":     {"emoji": "📊", "label": "시장 시황"},
+    "startup_trend":     {"emoji": "🦄", "label": "스타트업 트렌드"},
+    "product_hunt":      {"emoji": "🚀", "label": "테크 신제품"},
+    "ai_tips":           {"emoji": "🧠", "label": "AI 비서 팁"},
+    "vibe_coding":       {"emoji": "☕", "label": "바이브코딩 티타임"},
+    "weekly_review":     {"emoji": "📅", "label": "주간 핵심 정리"},
+    # ── 브랜드 스포트라이트 ─────────────────────────────────
+    "openai_spotlight":  {"emoji": "🤖", "label": "OpenAI 스포트라이트"},
+    "claude_spotlight":  {"emoji": "🧬", "label": "Claude AI 스포트라이트"},
+    "coingecko_report":  {"emoji": "📈", "label": "CoinGecko AI 마켓"},
 }
 
 
@@ -46,9 +50,18 @@ def get_content_type() -> str:
     if weekday == 6 and hour == 20:
         return "weekly_review"
 
-    # 21:00 슬롯: 화(1)/목(3)/토(5) → 바이브코딩, 나머지 → AI 팁
+    # 21:00 슬롯 7일 순환 (월~일)
+    _21H_ROTATION = [
+        "ai_tips",           # 월 (0)
+        "vibe_coding",       # 화 (1)
+        "openai_spotlight",  # 수 (2)
+        "claude_spotlight",  # 목 (3)
+        "ai_tips",           # 금 (4)
+        "coingecko_report",  # 토 (5)
+        "weekly_review",     # 일 (6) – 20:00과 동일, 아래 조건에서 먼저 처리됨
+    ]
     if hour >= 21:
-        return "vibe_coding" if weekday in (1, 3, 5) else "ai_tips"
+        return _21H_ROTATION[weekday]
 
     for h in sorted(CONTENT_SCHEDULE.keys(), reverse=True):
         if hour >= h:
@@ -263,6 +276,79 @@ def fetch_vibe_coding_news() -> list[dict]:
         return []
 
 
+def fetch_openai_spotlight() -> list[dict]:
+    """Serper: OpenAI / GPT 최신 공식 발표 및 동향"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": "OpenAI GPT ChatGPT 최신 발표 업데이트 2025", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ OpenAI 뉴스 수집 실패: {e}")
+        return [{"title": "OpenAI 최신 소식", "snippet": "GPT 관련 최신 동향을 확인하세요", "link": ""}]
+
+
+def fetch_claude_spotlight() -> list[dict]:
+    """Serper: Anthropic / Claude AI 최신 공식 발표 및 동향"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": "Anthropic Claude AI 최신 업데이트 Constitutional AI 2025", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ Claude 뉴스 수집 실패: {e}")
+        return [{"title": "Claude AI 최신 소식", "snippet": "Anthropic Claude 관련 최신 동향을 확인하세요", "link": ""}]
+
+
+def fetch_coingecko_ai_tokens() -> list[dict]:
+    """CoinGecko API: AI 관련 토큰 카테고리 시황"""
+    try:
+        # AI & Big Data 카테고리 코인
+        res = requests.get(
+            "https://api.coingecko.com/api/v3/coins/markets",
+            params={
+                "vs_currency": "usd",
+                "category": "artificial-intelligence",
+                "order": "market_cap_desc",
+                "per_page": 8,
+                "page": 1,
+                "price_change_percentage": "24h,7d",
+            },
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {
+                "name":        c["name"],
+                "symbol":      c["symbol"].upper(),
+                "price_usd":   f"${c['current_price']:,.4f}",
+                "change_24h":  f"{c.get('price_change_percentage_24h', 0):.2f}%",
+                "change_7d":   f"{c.get('price_change_percentage_7d_in_currency', 0):.2f}%",
+                "market_cap":  f"${c.get('market_cap', 0) / 1e6:.1f}M",
+            }
+            for c in res.json()
+        ]
+    except Exception as e:
+        print(f"⚠️ CoinGecko AI 토큰 수집 실패: {e}")
+        return fetch_crypto()  # 폴백: 일반 코인 시황
+
+
 def fetch_weekly_summary() -> list[dict]:
     """이번 주 AI 핵심 뉴스 (Serper 주간 검색)"""
     try:
@@ -315,6 +401,22 @@ def collect_data(content_type: str) -> dict:
             "news":   fetch_weekly_summary(),
             "crypto": fetch_crypto(),
             "github": fetch_github_trending()[:3],
+        }
+    # ── 브랜드 스포트라이트 ─────────────────────────────────
+    elif content_type == "openai_spotlight":
+        return {
+            "news":   fetch_openai_spotlight(),
+            "github": fetch_github_trending()[:2],
+        }
+    elif content_type == "claude_spotlight":
+        return {
+            "news":   fetch_claude_spotlight(),
+            "github": fetch_github_trending()[:2],
+        }
+    elif content_type == "coingecko_report":
+        return {
+            "crypto": fetch_coingecko_ai_tokens(),
+            "news":   fetch_ai_news()[:3],
         }
     return {}
 

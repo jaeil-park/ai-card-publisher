@@ -8,6 +8,9 @@ from src.trend_fetcher import get_content_type, collect_data, generate_card_cont
 from src.card_generator import generate_carousel
 from src.analytics import record_post, notify_posted
 from src.poster import post_instagram_carousel, post_threads_carousel
+from src.highlight_manager import (
+    get_highlight, create_story_cover, print_highlight_guide,
+)
 
 
 def main():
@@ -35,14 +38,18 @@ def main():
 
     # 4-1. 콘텐츠 타입별 커뮤니티 해시태그 추가
     _COMMUNITY_TAGS = {
-        "morning_briefing": ["#AIThreads"],
-        "bigtech_news":     ["#AIThreads"],
-        "market_update":    ["#AIThreads"],
-        "startup_trend":    ["#AIThreads", "#유튜브자동화"],
-        "product_hunt":     ["#AIThreads", "#유튜브자동화"],
-        "ai_tips":          ["#AIThreads", "#CLAUDE"],
-        "vibe_coding":      ["#AIThreads", "#바이브코딩", "#CLAUDE", "#유튜브자동화"],
-        "weekly_review":    ["#AIThreads"],
+        "morning_briefing":  ["#AIThreads"],
+        "bigtech_news":      ["#AIThreads"],
+        "market_update":     ["#AIThreads", "#CoinGecko"],
+        "startup_trend":     ["#AIThreads", "#유튜브자동화"],
+        "product_hunt":      ["#AIThreads", "#유튜브자동화"],
+        "ai_tips":           ["#AIThreads", "#CLAUDE"],
+        "vibe_coding":       ["#AIThreads", "#바이브코딩", "#CLAUDE", "#유튜브자동화"],
+        "weekly_review":     ["#AIThreads"],
+        # 브랜드 스포트라이트
+        "openai_spotlight":  ["#AIThreads", "#OpenAI", "#ChatGPT", "#GPT"],
+        "claude_spotlight":  ["#AIThreads", "#CLAUDE", "#Anthropic", "#ConstitutionalAI"],
+        "coingecko_report":  ["#AIThreads", "#CoinGecko", "#Web3AI", "#AIAgents"],
     }
     community_tags = " ".join(_COMMUNITY_TAGS.get(content_type, ["#AIThreads"]))
     content["hashtags"] = content["hashtags"].rstrip() + " " + community_tags
@@ -63,14 +70,19 @@ def main():
 
     # 7. Instagram + Threads 캐러셀 게시
     _TOPIC_MAP = {
-        "market_overview":                    "FINANCE",
-        "bigtech_news":                       "TECHNOLOGY",
-        "startup_trend":                      "TECHNOLOGY",
-        "ai_tips":                            "ARTIFICIAL_INTELLIGENCE",
-        "vibe_coding":                        "ARTIFICIAL_INTELLIGENCE",
-        "morning_briefing":                   "ARTIFICIAL_INTELLIGENCE",
-        "product_hunt":                       "ARTIFICIAL_INTELLIGENCE",
-        "weekly_review":                      "ARTIFICIAL_INTELLIGENCE",
+        "market_overview":   "FINANCE",
+        "market_update":     "FINANCE",
+        "bigtech_news":      "TECHNOLOGY",
+        "startup_trend":     "TECHNOLOGY",
+        "ai_tips":           "ARTIFICIAL_INTELLIGENCE",
+        "vibe_coding":       "ARTIFICIAL_INTELLIGENCE",
+        "morning_briefing":  "ARTIFICIAL_INTELLIGENCE",
+        "product_hunt":      "ARTIFICIAL_INTELLIGENCE",
+        "weekly_review":     "ARTIFICIAL_INTELLIGENCE",
+        # 브랜드 스포트라이트
+        "openai_spotlight":  "ARTIFICIAL_INTELLIGENCE",
+        "claude_spotlight":  "ARTIFICIAL_INTELLIGENCE",
+        "coingecko_report":  "FINANCE",
     }
     topic_tag = _TOPIC_MAP.get(content_type, "ARTIFICIAL_INTELLIGENCE")
 
@@ -86,6 +98,23 @@ def main():
     if results:
         record_post(content_type, title, results)
         notify_posted(content_type, title, list(results.keys()))
+
+    # 8. Instagram 하이라이트용 Story 커버 자동 생성
+    print(f"\n📱 Story 커버 생성 중... (하이라이트: [{get_highlight(content_type)}])")
+    try:
+        from PIL import Image as _PIL_Image
+        from pathlib import Path as _Path
+        # 첫 번째 이미지로 Story 커버 생성 (로컬 파일 또는 URL에서)
+        _cover_path = _Path("output/story_covers") / f"story_{content_type}.jpg"
+        # Cloudinary URL에서 이미지 다운로드 후 Story 커버 생성
+        import requests as _req
+        import io as _io
+        _img_data = _req.get(image_urls[0], timeout=20).content
+        _feed_card = _PIL_Image.open(_io.BytesIO(_img_data)).convert("RGB")
+        create_story_cover(_feed_card, content_type, title, save_path=_cover_path)
+        print_highlight_guide(content_type, title)
+    except Exception as e:
+        print(f"  ⚠️ Story 커버 생성 실패 (계속 진행): {e}")
 
     print("🎉 All platforms posted successfully!")
 

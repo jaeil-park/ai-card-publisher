@@ -3,6 +3,7 @@ import json
 import requests
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from src.highlight_manager import get_highlight
 
 ANALYTICS_FILE  = Path("analytics/posts.json")
 WEBHOOK_URL     = os.environ.get("DISCORD_WEBHOOK_URL", "")
@@ -13,12 +14,18 @@ KRW_PER_USD      = 1380
 
 # 콘텐츠 타입 한글 레이블
 TYPE_LABEL = {
-    "morning_briefing": "☀️ 아침 브리핑",
-    "tech_trend":       "💻 개발 트렌드",
-    "market_update":    "📊 시장 시황",
-    "ai_tools":         "🛠️ AI 개발툴",
-    "product_hunt":     "🚀 AI 신제품",
-    "ai_tips":          "🧠 AI 비서 팁",
+    "morning_briefing":  "☀️ 아침 브리핑",
+    "bigtech_news":      "🏢 빅테크 뉴스",
+    "market_update":     "📊 시장 시황",
+    "startup_trend":     "🦄 스타트업 트렌드",
+    "product_hunt":      "🚀 AI 신제품",
+    "ai_tips":           "🧠 AI 비서 팁",
+    "vibe_coding":       "☕ 바이브코딩",
+    "weekly_review":     "📅 주간 정리",
+    # 브랜드 스포트라이트
+    "openai_spotlight":  "🤖 OpenAI 스포트라이트",
+    "claude_spotlight":  "🧬 Claude AI 스포트라이트",
+    "coingecko_report":  "📈 CoinGecko AI 마켓",
 }
 
 
@@ -49,13 +56,14 @@ def record_post(content_type: str, title: str, results: dict):
         if not media_id:
             continue
         data["posts"].append({
-            "media_id":     media_id,
-            "platform":     platform,
-            "content_type": content_type,
-            "title":        title,
-            "posted_at":    now,
-            "insights":     {},
-            "insights_at":  None,
+            "media_id":         media_id,
+            "platform":         platform,
+            "content_type":     content_type,
+            "highlight":        get_highlight(content_type),
+            "title":            title,
+            "posted_at":        now,
+            "insights":         {},
+            "insights_at":      None,
         })
 
     _save(data)
