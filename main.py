@@ -33,6 +33,21 @@ def main():
     print(f"📝 슬라이드 2: {content['slide2']['headline']}")
     print(f"📝 슬라이드 3 CTA: {content['slide3']['cta_question']}")
 
+    # 4-1. 콘텐츠 타입별 커뮤니티 해시태그 추가
+    _COMMUNITY_TAGS = {
+        "morning_briefing": ["#AIThreads"],
+        "bigtech_news":     ["#AIThreads"],
+        "market_update":    ["#AIThreads"],
+        "startup_trend":    ["#AIThreads", "#유튜브자동화"],
+        "product_hunt":     ["#AIThreads", "#유튜브자동화"],
+        "ai_tips":          ["#AIThreads", "#CLAUDE"],
+        "vibe_coding":      ["#AIThreads", "#바이브코딩", "#CLAUDE", "#유튜브자동화"],
+        "weekly_review":    ["#AIThreads"],
+    }
+    community_tags = " ".join(_COMMUNITY_TAGS.get(content_type, ["#AIThreads"]))
+    content["hashtags"] = content["hashtags"].rstrip() + " " + community_tags
+    print(f"🏷️  커뮤니티 태그: {community_tags}")
+
     # 5. 3장 캐러셀 이미지 생성 + Cloudinary 업로드
     image_urls = generate_carousel(content)
     print(f"🖼️  캐러셀 {len(image_urls)}장 생성 완료")
