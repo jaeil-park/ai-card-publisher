@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(pip show:*)",
+      "Bash(python -c \"from PIL import Image; print\\(''OK'', Image.__version__\\)\")",
+      "Bash(ls d:/ai-card-publisher/.venv/Scripts/python*)",
+      "Bash(ls d:/ai-card-publisher/venv/Scripts/python*)",
+      "Bash(pip install:*)",
+      "Bash(C:/Python314/python -m pip install Pillow)",
+      "Bash(python -c \"from PIL import Image; print\\(''OK PIL'', Image.__version__\\)\")"
+    ]
+  }
+}
