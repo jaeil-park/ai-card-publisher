@@ -112,9 +112,9 @@ def create_slide1(stat: str, headline: str, sub: str, bg: Image.Image) -> Image.
     f_sub      = _font(bold=False, size=28)
     f_xs       = _font(bold=False, size=20)
 
-    # 상단 카테고리 배지
-    draw.rectangle([30, 28, 228, 60], fill=(30, 120, 255, 220))
-    draw.text((42, 33), "📊 AI FACT CHECK", font=f_xs, fill=(255, 255, 255, 255))
+    # 상단 카테고리 배지 (이모지 제거 - NanumGothic 미지원)
+    draw.rectangle([30, 28, 210, 60], fill=(30, 120, 255, 220))
+    draw.text((42, 33), "AI FACT CHECK", font=f_xs, fill=(255, 255, 255, 255))
 
     # BIG STAT (중앙 상단 - 임팩트 최대화)
     stat_bbox = draw.textbbox((0, 0), stat, font=f_stat)
@@ -229,48 +229,57 @@ def create_slide3(takeaway: str, cta_question: str, follow_cta: str) -> Image.Im
     draw = ImageDraw.Draw(img)
 
     # 폰트
-    f_takeaway = _font(bold=True,  size=52)
-    f_cta      = _font(bold=True,  size=34)
-    f_follow   = _font(bold=False, size=28)
+    f_takeaway = _font(bold=True,  size=56)
+    f_cta      = _font(bold=True,  size=36)
+    f_follow   = _font(bold=True,  size=30)
     f_label    = _font(bold=False, size=20)
 
     # 상단 진행 표시
     draw.rectangle([30, 28, 90, 56], fill=(60, 60, 80, 200))
     draw.text((40, 33), "3/3", font=f_label, fill=(160, 160, 160, 220))
 
-    # 핵심 정리 레이블 배지
-    draw.rectangle([40, 110, 196, 142], fill=(30, 120, 255, 220))
-    draw.text((52, 116), "✓ 핵심 정리", font=f_label, fill=(255, 255, 255, 255))
+    # 핵심 정리 레이블 배지 (이모지 제거 - NanumGothic 미지원)
+    draw.rectangle([40, 90, 190, 122], fill=(30, 120, 255, 220))
+    draw.text((52, 96), "핵심 정리", font=f_label, fill=(255, 255, 255, 255))
 
-    # Takeaway (노란색, 자동 줄바꿈)
+    # Takeaway (노란색, 자동 줄바꿈, 넉넉한 줄간격)
     wrapped_tw = wrap_text_by_pixels(takeaway, f_takeaway, 944, draw)
-    y = 180
+    y = 152
     for line in wrapped_tw[:3]:
         draw.text((40, y), line, font=f_takeaway, fill=(255, 220, 0, 255))
-        y += 68
+        y += 74
 
     # 구분선
-    divider_y = y + 24
+    divider_y = y + 28
     draw.line([(40, divider_y), (984, divider_y)], fill=(255, 255, 255, 50), width=1)
 
     # CTA 박스 (댓글 유도 - Instagram 깊은 참여 가이드라인)
-    cta_y = divider_y + 40
+    # 이모지 제거 후 텍스트로만 구성
+    cta_y = divider_y + 38
     draw.rectangle(
-        [40, cta_y, 984, cta_y + 140],
-        fill=(20, 80, 180, 50),
-        outline=(30, 120, 255, 100),
+        [40, cta_y, 984, cta_y + 210],
+        fill=(20, 80, 180, 55),
+        outline=(30, 120, 255, 110),
         width=1
     )
-    draw.text((56, cta_y + 14), "💬 여러분의 생각은?", font=f_label, fill=(100, 170, 255, 255))
+    draw.text((56, cta_y + 16), "여러분의 생각은?", font=f_label, fill=(100, 170, 255, 240))
     wrapped_cta = wrap_text_by_pixels(cta_question, f_cta, 900, draw)
-    cta_text_y = cta_y + 44
+    cta_text_y = cta_y + 50
     for line in wrapped_cta[:2]:
-        draw.text((56, cta_text_y), line, font=f_cta, fill=(255, 255, 255, 240))
-        cta_text_y += 48
+        draw.text((56, cta_text_y), line, font=f_cta, fill=(255, 255, 255, 245))
+        cta_text_y += 56
+    draw.text((56, cta_y + 172), "댓글로 알려주세요 →", font=f_label, fill=(100, 170, 255, 200))
 
-    # 팔로우 유도 (Instagram 가이드라인: 지속적인 도달 확보)
-    follow_y = cta_y + 168
-    draw.text((40, follow_y), "👉 " + follow_cta, font=f_follow, fill=(140, 190, 255, 200))
+    # 팔로우 구분선
+    follow_div_y = cta_y + 232
+    draw.line([(40, follow_div_y), (984, follow_div_y)], fill=(255, 255, 255, 30), width=1)
+
+    # 팔로우 유도 (▶ 사용 - NanumGothic 지원)
+    follow_y = follow_div_y + 28
+    draw.text((40, follow_y), "▶  " + follow_cta, font=f_follow, fill=(140, 190, 255, 210))
+
+    # 서브 팔로우 문구
+    draw.text((40, follow_y + 52), "매일 AI · 코인 · 증시 트렌드 업데이트", font=f_label, fill=(120, 140, 180, 170))
 
     # 하단 브랜드
     draw.text((40, 992), BRAND, font=f_label, fill=(140, 140, 140, 130))

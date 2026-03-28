@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from openai import OpenAI
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 
@@ -23,14 +23,23 @@ CONTENT_META = {
     "ai_tools":         {"emoji": "🛠️", "label": "AI 개발툴"},
     "product_hunt":     {"emoji": "🚀", "label": "AI 신제품"},
     "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁"},
+    "weekly_review":    {"emoji": "📅", "label": "주간 AI 정리"},
 }
 
 
 # ── 콘텐츠 타입 자동 결정 ──────────────────────────────────
 
 def get_content_type() -> str:
-    """현재 KST 시각 기준으로 콘텐츠 타입 자동 결정"""
-    hour = (datetime.utcnow() + timedelta(hours=9)).hour
+    """현재 KST 시각 기준으로 콘텐츠 타입 자동 결정
+    일요일 20:00 KST: 주간 AI 하이라이트 정리 (weekly_review)
+    """
+    now     = datetime.now(timezone.utc) + timedelta(hours=9)
+    hour    = now.hour
+    weekday = now.weekday()  # 0=월, 6=일
+
+    if weekday == 6 and hour == 20:
+        return "weekly_review"
+
     for h in sorted(CONTENT_SCHEDULE.keys(), reverse=True):
         if hour >= h:
             return CONTENT_SCHEDULE[h]
@@ -179,6 +188,24 @@ def fetch_product_hunt() -> list[dict]:
 
 # ── 콘텐츠 타입별 데이터 수집 ─────────────────────────────
 
+def fetch_weekly_summary() -> list[dict]:
+    """이번 주 AI 핵심 뉴스 (Serper 주간 검색)"""
+    try:
+        week_ago = (datetime.now(timezone.utc) + timedelta(hours=9) - timedelta(days=7)).strftime("%Y-%m-%d")
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": f"AI 인공지능 주요 뉴스 after:{week_ago}", "gl": "kr", "hl": "ko", "num": 8},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [{"title": i["title"], "snippet": i.get("snippet", "")}
+                for i in res.json().get("news", [])]
+    except Exception as e:
+        print(f"⚠️ 주간 요약 수집 실패: {e}")
+        return fetch_ai_news()
+
+
 def collect_data(content_type: str) -> dict:
     """콘텐츠 타입에 맞는 데이터 수집"""
     print(f"📡 데이터 수집 중: {content_type}")
@@ -194,6 +221,12 @@ def collect_data(content_type: str) -> dict:
         return {"products": fetch_product_hunt(), "news": fetch_ai_news()[:2]}
     elif content_type == "ai_tips":
         return {"news": fetch_ai_news()[:3]}
+    elif content_type == "weekly_review":
+        return {
+            "news":   fetch_weekly_summary(),
+            "crypto": fetch_crypto(),
+            "github": fetch_github_trending()[:3],
+        }
     return {}
 
 
@@ -247,7 +280,9 @@ AI 뉴스: {json.dumps(news, ensure_ascii=False)}
 [슬라이드 1 - 훅: 첫 3초 안에 관심 유도]
 - stat: 가장 임팩트 있는 수치 하나. 6자 이내. (예: "+9.2%", "GPT-5", "1조원", "$1T")
 - headline: 수치를 설명하는 임팩트 제목. 12자 이내.
-- sub: stat 맥락 설명 부제. 20자 이내.
+- sub: stat이 나타내는 맥락/기간. 20자 이내.
+  예: "이번 주 GitHub 스타 획득", "BTC 24시간 변동률"
+  절대 금지: "X개 소개", "총 X건", "핵심 N가지" 등 슬라이드 2 항목 수 언급
 - dalle_prompt: 주제와 직접 연관된 photorealistic 뉴스 사진 장면 (영문, 100자 이내)
   예시: "Bitcoin gold coin on dark financial chart, photorealistic, cinematic lighting"
 
