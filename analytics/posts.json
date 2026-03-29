@@ -1,1 +1,24 @@
-{"posts":[]}
+{
+  "posts": [
+    {
+      "media_id": "18342025375215282",
+      "platform": "instagram",
+      "content_type": "weekly_review",
+      "highlight": "AI툴",
+      "title": "AI 도입 어려움",
+      "posted_at": "2026-03-29T13:55:02.209386+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18121154200544832",
+      "platform": "threads",
+      "content_type": "weekly_review",
+      "highlight": "AI툴",
+      "title": "AI 도입 어려움",
+      "posted_at": "2026-03-29T13:55:02.209386+00:00",
+      "insights": {},
+      "insights_at": null
+    }
+  ]
+}
