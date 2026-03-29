@@ -27,7 +27,7 @@ jobs:
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: 📦 Install dependencies
-        run: pip install requests python-dotenv
+        run: pip install -r requirements.txt
 
       - name: 📊 Run Daily Report
         if: github.event.schedule == '0 22 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.report_type == 'daily')
