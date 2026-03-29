@@ -181,10 +181,11 @@ def fetch_stock_market() -> list[dict]:
 def fetch_ai_tools_news() -> list[dict]:
     """Serper: AI 개발툴 최신 동향"""
     try:
+        year = datetime.now().year
         res = requests.post(
             "https://google.serper.dev/news",
             headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
-            json={"q": "Claude Code Cursor Copilot Windsurf AI coding tool 2025", "gl": "kr", "hl": "ko", "num": 5},
+            json={"q": f"Claude Code Cursor Copilot Windsurf AI coding tool {year}", "gl": "kr", "hl": "ko", "num": 5},
             timeout=10
         )
         res.raise_for_status()
@@ -198,10 +199,11 @@ def fetch_ai_tools_news() -> list[dict]:
 def fetch_product_hunt() -> list[dict]:
     """Serper: 테크/AI 신제품 (링크 포함)"""
     try:
+        year = datetime.now().year
         res = requests.post(
             "https://google.serper.dev/search",
             headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
-            json={"q": "site:producthunt.com AI tool 2025", "num": 5},
+            json={"q": f"site:producthunt.com AI tool {year}", "num": 5},
             timeout=10
         )
         res.raise_for_status()
@@ -240,7 +242,7 @@ def fetch_startup_trend() -> list[dict]:
         res = requests.post(
             "https://google.serper.dev/news",
             headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
-            json={"q": "스타트업 투자 시리즈 Series 유니콘 VC AI 신기술 2025", "gl": "kr", "hl": "ko", "num": 6},
+            json={"q": f"스타트업 투자 시리즈 Series 유니콘 VC AI 신기술 {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 6},
             timeout=10
         )
         res.raise_for_status()
@@ -262,7 +264,7 @@ def fetch_vibe_coding_news() -> list[dict]:
         res = requests.post(
             "https://google.serper.dev/news",
             headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
-            json={"q": "vibe coding Claude Code Cursor Windsurf AI coding 바이브코딩 2025", "gl": "kr", "hl": "ko", "num": 6},
+            json={"q": f"vibe coding Claude Code Cursor Windsurf AI coding 바이브코딩 {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 6},
             timeout=10
         )
         res.raise_for_status()
@@ -282,7 +284,7 @@ def fetch_openai_spotlight() -> list[dict]:
         res = requests.post(
             "https://google.serper.dev/news",
             headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
-            json={"q": "OpenAI GPT ChatGPT 최신 발표 업데이트 2025", "gl": "kr", "hl": "ko", "num": 6},
+            json={"q": f"OpenAI GPT ChatGPT 최신 발표 업데이트 {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 6},
             timeout=10
         )
         res.raise_for_status()
@@ -302,7 +304,7 @@ def fetch_claude_spotlight() -> list[dict]:
         res = requests.post(
             "https://google.serper.dev/news",
             headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
-            json={"q": "Anthropic Claude AI 최신 업데이트 Constitutional AI 2025", "gl": "kr", "hl": "ko", "num": 6},
+            json={"q": f"Anthropic Claude AI 최신 업데이트 Constitutional AI {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 6},
             timeout=10
         )
         res.raise_for_status()
@@ -494,9 +496,13 @@ AI 뉴스: {json.dumps(news, ensure_ascii=False)}
 - dalle_prompt: 주제와 직접 연관된 photorealistic 뉴스 사진 장면 (영문, 100자 이내)
   예시: "Bitcoin gold coin on dark financial chart, photorealistic, cinematic lighting"
 
-[슬라이드 2 - 상세: 왜/어떻게 - 스크롤 유도]
+[슬라이드 2 - 상세: 왜/어떻게 - 스크롤 유도 (인포그래픽)]
 - headline: "왜?" "어떻게?" 형태 질문. 15자 이내.
-- points: 팩트 3가지. 각 항목 수치 포함, 30자 이내. 서로 다른 관점.
+- points: 팩트 3가지. 원인→영향→전망 구조 권장.
+  각 항목:
+  - tag: 2~3자 카테고리 레이블 (예: "원인" "영향" "전망" "배경" "수치" "전략" "현황")
+  - text: 핵심 팩트 + 수치. 25자 이내.
+  - context: 배경 설명 또는 추가 데이터. 이유/근거 포함. 35자 이내.
 
 [슬라이드 3 - 요약 + CTA: 댓글 참여 유도]
 - takeaway: 핵심 결론 한 문장. 25자 이내.
@@ -525,7 +531,11 @@ AI 뉴스: {json.dumps(news, ensure_ascii=False)}
   }},
   "slide2": {{
     "headline": "왜 이런 일이?",
-    "points": ["팩트1+수치", "팩트2+수치", "팩트3+수치"]
+    "points": [
+      {{"tag": "원인", "text": "핵심팩트+수치", "context": "배경설명/근거"}},
+      {{"tag": "영향", "text": "핵심팩트+수치", "context": "배경설명/근거"}},
+      {{"tag": "전망", "text": "핵심팩트+수치", "context": "배경설명/근거"}}
+    ]
   }},
   "slide3": {{
     "takeaway": "핵심 결론",
