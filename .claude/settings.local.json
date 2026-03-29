@@ -15,7 +15,14 @@
       "mcp__claude_ai_Notion__notion-search",
       "mcp__claude_ai_Notion__notion-create-pages",
       "mcp__claude_ai_Notion__notion-fetch",
-      "mcp__claude_ai_Notion__notion-update-page"
+      "mcp__claude_ai_Notion__notion-update-page",
+      "WebSearch",
+      "Bash(python -c \"import PIL; print\\(''Pillow:'', PIL.__version__\\)\")",
+      "Bash(python -c \"from PIL import ImageFilter; print\\(''ImageFilter OK''\\)\")",
+      "Bash(python generate_sponsorship_cards.py)",
+      "Bash(python -c \":*)",
+      "Bash(python setup_fonts.py)",
+      "Bash(git fetch:*)"
     ]
   }
 }

@@ -440,12 +440,20 @@ def generate_card_content(theme: str, news: list, crypto: list) -> dict:
         import re
         from collections import Counter
 
+        points = content.get("slide2", {}).get("points", [])
+        points_text = ""
+        if isinstance(points, list):
+            points_text = " ".join([
+                f"{p.get('tag', '')} {p.get('text', '')} {p.get('context', '')}" if isinstance(p, dict) else str(p)
+                for p in points
+            ])
+
         all_text = " ".join([
             content.get("caption", ""),
             content.get("slide1", {}).get("headline", ""),
             content.get("slide1", {}).get("sub", ""),
             content.get("slide2", {}).get("headline", ""),
-            " ".join(content.get("slide2", {}).get("points", [])),
+            points_text,
             content.get("slide3", {}).get("takeaway", ""),
         ])
         words = re.findall(r'[가-힣a-zA-Z]{2,}', all_text)

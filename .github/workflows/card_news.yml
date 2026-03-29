@@ -13,6 +13,8 @@ on:
 
 jobs:
   post-card-news:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +38,15 @@ jobs:
 
       - name: 🚀 Run Card News Pipeline
         env:
-          GITHUB_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN:      ${{ secrets.PAT_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python main.py
+
+      - name: 💾 Commit & Push data
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          [ -f .token_status.json ] && git add .token_status.json
+          [ -d analytics ] && git add analytics/posts.json
+          git diff --staged --quiet || git commit -m "🤖 auto: update post and token data [skip ci]"
+          git push
