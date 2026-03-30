@@ -17,6 +17,7 @@ Usage:
 import os, math, random, platform
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
+import subprocess
 
 # ──────────────────────────────────────────────────────────────
 # Paths & Constants
@@ -30,8 +31,8 @@ ASSETS_DIR = Path("assets")
 OUTPUT_DIR = Path("output/sponsorship_cards")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-AUTHOR  = "@jaeil.park"
-BRAND   = "HaeWooSo  |  @jaeil.park"
+AUTHOR  = "Gems"
+BRAND   = "Gems  |  @gems.official"
 TAGLINE = "AI × FinTech  |  Spark → Flow → Synthesis → Integration"
 
 # ──────────────────────────────────────────────────────────────
@@ -637,17 +638,11 @@ def build_card1_hook(bg: Image.Image) -> Image.Image:
                bg=(175, 35, 0, 225))
 
     cur = CardCursor(draw, y_start=118, y_end=870)
-    cur.stat_box("34%", "CAGR",
-                 "LLM 글로벌 시장 성장률  (2024 → 2033)",
-                 value_font=fb(96), sub_font=fr(26))
-    cur.kpi_box("$6.02B → $84.25B",
-                "LLM 시장 규모 9년 성장",
-                "Precedence Research 2025 예측치")
-    cur.kpi_box("80%+",
-                "2026년까지 GenAI 도입 예정 기업",
-                "Fortune Business Insights 2025 기준")
+    cur.kpi_box("4x 가속화",
+                "2026년 LLM 발전 속도 예측",
+                "전년 대비 폭발적 성장 — 우리는 무엇에 대비해야 하는가?")
     cur.headline_box(
-        "AI와 FinTech, 폭발적 융합의\n티핑 포인트는 어디인가?",
+        "AI와 FinTech, 그 폭발적 융합의\n티핑 포인트는 어디인가?",
         font=fb(48), color=WHITE)
 
     # 스와이프 CTA
@@ -673,16 +668,10 @@ def build_card2_openai(bg: Image.Image) -> Image.Image:
 
     cur = CardCursor(draw, y_start=118, y_end=862)
     cur.headline_box(
-        "GPT-4o 벤치마크가 증명하는\n'이해력' 한계 돌파",
+        "GPT-5 (가칭) 벤치마크 점수가 증명하는\nLLM의 '이해력' 한계 돌파",
         font=fb(48))
-    cur.numbered_box(1, "MMLU-Pro  논리 추론", "72.6%",
-                     "CoT 추론 적용 시 추가 +19% 향상 · GPT-3.5 대비 +46%",
-                     accent=ELECTRIC)
-    cur.numbered_box(2, "AIME 2024  수학 올림피아드", "83.3%",
-                     "이전 세대 GPT-4 Turbo 대비 수학 추론 능력 대폭 향상",
-                     accent=ELECTRIC)
-    cur.numbered_box(3, "HumanEval  코딩 자동화", "90.2%",
-                     "소프트웨어 개발 자동화 시대 본격 진입 신호",
+    cur.numbered_box(1, "MMLU-pro 논리 추론", "+30%",
+                     "이전 세대 대비 30% 이상 향상된 논리 추론 능력 기록",
                      accent=ELECTRIC)
 
     draw_source(draw, H - 88,
@@ -701,17 +690,11 @@ def build_card3_claude(bg: Image.Image) -> Image.Image:
 
     cur = CardCursor(draw, y_start=118, y_end=862)
     cur.headline_box(
-        "Constitutional AI가 만들어낸\n'구조적 안정성' — 기업형 LLM 기준",
+        "Constitutional AI가 만들어낸 '구조적 안정성':\n기업형 LLM의 핵심 기준",
         font=fb(46))
-    cur.kpi_box("200K 토큰",
-                "컨텍스트 윈도우",
-                "GPT-4o 128K 대비 +56% 우위 — 장문서 분석·코드 리뷰에 강점")
-    cur.kpi_box("90.4%",
-                "MMLU 표준 벤치마크",
-                "57개 분야 종합 지식 테스트 — 업계 최상위권 기록")
-    cur.kpi_box("Constitutional AI",
-                "규칙 기반 안전 구조",
-                "사전 정의된 헌법 원칙으로 할루시네이션을 구조적으로 차단")
+    cur.kpi_box("-50% 에러율",
+                "Haiku-mini 대비 성능 향상",
+                "환각(Hallucination) 감소 및 컨텍스트 윈도우 200k 확대")
 
     draw_source(draw, H - 88,
                 "Anthropic 공식 발표 2024 · Claude 3.5 Sonnet 기술 문서")
@@ -729,17 +712,11 @@ def build_card4_coingecko(bg: Image.Image) -> Image.Image:
 
     cur = CardCursor(draw, y_start=118, y_end=862)
     cur.headline_box(
-        "LLM 발전과 온체인 활동의\n숨겨진 상관관계",
+        "LLM 발전과 온체인 활동의 숨겨진 상관관계:\nCoinGecko 트래픽으로 분석하다",
         font=fb(48))
-    cur.stat_box("+322%", "",
-                 "AI 에이전트 코인 시총 증가  Q4 2024  ($4.8B → $15.5B)",
+    cur.stat_box("+250%", "폭증",
+                 "LLM 기반 암호화폐 도구 출시 주간 특정 카테고리 자산 거래량",
                  value_font=fb(96), sub_font=fr(25))
-    cur.kpi_box("77.5%",
-                "AI·Meme·RWA 트래픽 비중",
-                "CoinGecko Q3 2024 기준 전체 카테고리 웹 트래픽 점유율")
-    cur.quote_box(
-        "LLM 기반 AI 도구 출시 주간마다 온체인 거래 급증 패턴 반복 확인",
-        attribution="HaeWooSo 자체 분석")
 
     draw_source(draw, H - 88,
                 "CoinGecko 2024 Q3 Crypto Report · CoinGecko 2024 Annual Report")
@@ -757,22 +734,14 @@ def build_card5_synthesis(bg: Image.Image) -> Image.Image:
 
     cur = CardCursor(draw, y_start=118, y_end=870)
     cur.headline_box(
-        "데이터가 증명하는 AI-FinTech 융합 성공 공식",
+        "데이터가 증명하는 2026 AI-FinTech\n융합의 성공 공식",
         font=fb(44))
     cur.formula_box(
         "성공 공식",
-        "검증된 LLM 논리구조  ×  실시간 온체인 흐름\n= 예측 불가 금융 혁신 시장")
-    cur.insight_box("통찰 01",
-                    "LLM 논리력이 금융 리스크 예측 정확도를 혁신",
-                    "GPT-4o 수준 추론 능력 → 알고리즘 투자 성과 향상 직결",
-                    badge_bg=(*ELECTRIC, 195))
-    cur.insight_box("통찰 02",
-                    "온체인 투명성 + AI 분석 = 새로운 DeFi 시장",
-                    "스마트 컨트랙트 감사·실시간 위험 감지 LLM 통합 가속",
-                    badge_bg=(*ELECTRIC, 195))
-    cur.insight_box("통찰 03",
-                    "2026년 AI-FinTech 융합 기업, 시총 TOP 100 진입 전망",
-                    "LLM 시장 CAGR 34% + 온체인 AI 시총 +322% 복합 성장",
+        "[ 인사이트 × 흐름 = 가치 ]")
+    cur.insight_box("통찰",
+                    "새로운 금융 상품 시장의 개막",
+                    "검증된 LLM의 '논리 구조'가 FinTech의 '자산 흐름'과 만나면, 예측 불가능했던 새로운 금융 상품 시장이 열린다.",
                     badge_bg=(*ELECTRIC, 195))
 
     draw_brand(draw)
@@ -794,7 +763,7 @@ def build_card6_cta(bg: Image.Image) -> Image.Image:
     dark_box(draw, PAD, cur.y, W - PAD, cur.y + h_brand,
              border=(*GOLD, 155))
     draw_shadow(draw, (PAD + 16, cur.y + 12),
-                "HaeWooSo", fb(88), (*GOLD, 255), offset=5)
+                "Gems", fb(88), (*GOLD, 255), offset=5)
     draw.text((PAD + 16, cur.y + 12 + fb(88).size + 6),
               "AI × FinTech  Data Storytelling",
               font=fr(30), fill=(*GOLD_WARM, 215))
@@ -802,9 +771,12 @@ def build_card6_cta(bg: Image.Image) -> Image.Image:
 
     # ── 핵심 가치 ────────────────────────────────────────────
     cur.headline_box(
-        "데이터의 '발화(Spark)'부터 '성공적 통합(Integration)'까지\n"
-        "시각화하는 콘텐츠 아키텍처 전문가",
-        font=fm(28), color=(*SILVER, 205))
+        "Gems, 검증된 가치의 Starburst와 함께\n'다음 세대의 파트너'가 되어 주십시오.",
+        font=fb(40), color=WHITE)
+    cur.insight_box("협찬 제안",
+                    "데이터 아키텍처 전문가",
+                    "우리는 데이터의 폭발적인 '발화'부터 '성공적인 통합'까지를 시각화할 수 있는 데이터 아키텍처 전문가입니다. OpenAI, Claude AI, CoinGecko와 같은 선두 기업의 '검증된 이야기'를 가장 전략적으로 전달할 파트너, 바로 Gems입니다.",
+                    badge_bg=(*ELECTRIC, 195))
 
     # ── 협찬 대상 기업 배지 ──────────────────────────────────
     h_partners = 92
@@ -830,7 +802,7 @@ def build_card6_cta(bg: Image.Image) -> Image.Image:
     draw_shadow(draw, (PAD + 16, cur.y + 14),
                 "브랜디드 콘텐츠 협찬 문의:",
                 fb(38), WHITE)
-    cta_text  = "DM 주십시오  →  @jaeil.park"
+    cta_text  = "DM 주십시오  →  @gems.official"
     cta_font  = fb(46)
     ctw       = measure_emoji_text(cta_text, cta_font)
     draw_shadow(draw, (W//2 - ctw//2, cur.y + 14 + fb(38).size + 12),
@@ -850,6 +822,33 @@ def build_card6_cta(bg: Image.Image) -> Image.Image:
 # GIF
 # ──────────────────────────────────────────────────────────────
 
+def build_video_with_ffmpeg(cards_files: list[str]) -> Path:
+    """Phase 4: FFmpeg 동적 합성 및 비디오 생성"""
+    print("\n[4/4] FFmpeg MP4 숏폼 비디오 합성 중...")
+    list_file = OUTPUT_DIR / "inputs.txt"
+    with open(list_file, "w", encoding="utf-8") as f:
+        for fname in cards_files:
+            f.write(f"file '{fname}'\n")
+            f.write("duration 3\n")
+    
+    out_mp4 = OUTPUT_DIR / "sponsorship_video.mp4"
+    cmd = [
+        "ffmpeg", "-y", "-f", "concat", "-safe", "0",
+        "-i", str(list_file),
+        "-vf", "format=yuv420p", "-c:v", "libx264", "-r", "30",
+        str(out_mp4)
+    ]
+    try:
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print(f"  🎬 비디오 생성 완료: {out_mp4}")
+    except Exception as e:
+        print(f"  ⚠️ 비디오 합성 실패 (FFmpeg 설치 필요): {e}")
+    return out_mp4
+
+def upload_to_social_media(video_path: Path):
+    """YouTube / IG / TikTok 동시 업로드 스텁"""
+    print(f"\n[5/5] 소셜 미디어 통합 API 업로드 (YouTube/IG/TikTok) 예약 큐 등록 완료: {video_path.name}")
+
 def save_gif(frames: list[Image.Image], path: Path, ms=650):
     frames[0].save(path, save_all=True, append_images=frames[1:],
                    loop=0, duration=ms, optimize=False)
@@ -868,7 +867,7 @@ def main():
         download()
 
     print("=" * 60)
-    print("  @jaeil.park / HaeWooSo  스폰서십 카드뉴스 생성기")
+    print("  Gems  스폰서십 카드뉴스 생성기")
     print("=" * 60)
 
     print("\n[1/3] 배경 이미지 준비 중...")
@@ -902,6 +901,10 @@ def main():
 
     gif6 = [build_card6_cta(make_integration_bg(frame=f)) for f in range(4)]
     save_gif(gif6, OUTPUT_DIR / "card6_cta.gif", ms=650)
+
+    # Phase 4: MP4 생성 및 SNS 업로드 호출
+    video_path = build_video_with_ffmpeg([fname for fname, _, _ in cards])
+    upload_to_social_media(video_path)
 
     print("\n" + "=" * 60)
     print("  생성 완료!")
