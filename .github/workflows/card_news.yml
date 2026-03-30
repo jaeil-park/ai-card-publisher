@@ -32,10 +32,18 @@ jobs:
           sudo curl -s -o /usr/share/fonts/truetype/nanum/NanumGothic.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Regular.ttf
           sudo curl -s -o /usr/share/fonts/truetype/nanum/NanumGothicBold.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Bold.ttf
 
+      - name: 🎭 Install Playwright dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libgbm-dev libwoff-dev libharfbuzz-dev libatk-bridge2.0-0 libgtk-3-0
+
       - name: 📦 Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          # Playwright specific installation
+          pip install "playwright==1.44.0" # 최신 버전으로 업데이트 필요 시 변경
+          playwright install --with-deps chromium
 
       - name: 🚀 Run Card News Pipeline
         env:
