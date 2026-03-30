@@ -57,6 +57,25 @@ def generate_facts(theme: str, news: list) -> dict:
             ]
         }
 
+def generate_weekly_sections(data: dict) -> list[dict]:
+    """주간 써머리 리포트용: AI/테크, 시장, GitHub 3섹션을 각각 facts로 반환"""
+    sections = [
+        {"theme": "이번 주 AI·테크 핵심",   "items": data.get("news", [])},
+        {"theme": "이번 주 시장 동향",       "items": data.get("crypto", [])},
+        {"theme": "이번 주 주목할 GitHub",   "items": data.get("github", [])},
+    ]
+    results = []
+    for s in sections:
+        if not s["items"]:
+            continue
+        facts = generate_facts(theme=s["theme"], news=s["items"])
+        results.append(facts)
+    # 최소 1개는 보장
+    if not results:
+        results.append(generate_facts(theme="주간 핵심 정리", news=[]))
+    return results
+
+
 def generate_caption(facts: dict, news: list) -> str:
     """
     추출된 팩트(facts)와 원본 뉴스(news)를 바탕으로 풍성한 SNS 캡션을 생성합니다.

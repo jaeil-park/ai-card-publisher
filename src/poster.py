@@ -24,13 +24,7 @@ def _add_comment(platform: str, media_id: str, text: str, user_id: str, token: s
 
 
 def post_instagram_carousel(image_urls: list[str], caption: str, hashtags: str) -> dict:
-    """Instagram Graph API v24.0 캐러셀(슬라이드) 게시
-
-    Instagram 가이드라인 반영:
-    - 슬라이드는 단일 이미지보다 도달 성과 우수
-    - 해시태그는 첫 댓글로 분리 → 도달률 향상
-    - 낚시성/오해 소지 없는 캡션 사용
-    """
+    """Instagram Graph API v24.0 게시 (1장: 단일 이미지 / 2장+: 캐러셀)"""
     user_id = os.environ.get("INSTAGRAM_USER_ID", "")
     token   = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "")
 
@@ -38,7 +32,34 @@ def post_instagram_carousel(image_urls: list[str], caption: str, hashtags: str) 
         print("⏭️  Instagram 미설정 - 스킵")
         return {}
 
-    # 1. 각 슬라이드 아이템 컨테이너 생성
+    full_caption = caption + AI_FOOTER
+
+    # 단일 이미지 포스팅
+    if len(image_urls) == 1:
+        print("📸 Instagram 단일 이미지 게시 중...")
+        res = requests.post(
+            f"https://graph.instagram.com/v24.0/{user_id}/media",
+            params={"image_url": image_urls[0], "caption": full_caption, "access_token": token},
+            timeout=30
+        )
+        if not res.ok:
+            print(f"❌ Instagram media container 오류: {res.status_code} - {res.text}")
+        res.raise_for_status()
+        container_id = res.json()["id"]
+        time.sleep(5)
+        result = requests.post(
+            f"https://graph.instagram.com/v24.0/{user_id}/media_publish",
+            params={"creation_id": container_id, "access_token": token},
+            timeout=30
+        ).json()
+        media_id = result.get("id", "")
+        print(f"✅ Instagram posted: {media_id}")
+        if media_id and hashtags:
+            time.sleep(3)
+            _add_comment("instagram", media_id, hashtags, user_id, token)
+        return result
+
+    # 캐러셀 포스팅 (2장 이상)
     print(f"📸 Instagram 슬라이드 컨테이너 생성 중... ({len(image_urls)}장)")
     child_ids = []
     for i, url in enumerate(image_urls):
@@ -50,21 +71,14 @@ def post_instagram_carousel(image_urls: list[str], caption: str, hashtags: str) 
         if not res.ok:
             print(f"❌ 슬라이드 {i+1} 컨테이너 오류: {res.status_code} - {res.text}")
         res.raise_for_status()
-        cid = res.json()["id"]
-        child_ids.append(cid)
-        print(f"  슬라이드 {i+1}/{len(image_urls)}: {cid}")
+        child_ids.append(res.json()["id"])
+        print(f"  슬라이드 {i+1}/{len(image_urls)}: {res.json()['id']}")
         time.sleep(2)
 
-    # 2. 캐러셀 컨테이너 생성
-    full_caption = caption + AI_FOOTER
     res = requests.post(
         f"https://graph.instagram.com/v24.0/{user_id}/media",
-        params={
-            "media_type": "CAROUSEL",
-            "children":   ",".join(child_ids),
-            "caption":    full_caption,
-            "access_token": token,
-        },
+        params={"media_type": "CAROUSEL", "children": ",".join(child_ids),
+                "caption": full_caption, "access_token": token},
         timeout=30
     )
     if not res.ok:
@@ -73,7 +87,6 @@ def post_instagram_carousel(image_urls: list[str], caption: str, hashtags: str) 
     container_id = res.json()["id"]
     print(f"📸 Instagram carousel container: {container_id}")
 
-    # 3. 게시 (15초 대기 후)
     time.sleep(15)
     result = requests.post(
         f"https://graph.instagram.com/v24.0/{user_id}/media_publish",
@@ -82,23 +95,14 @@ def post_instagram_carousel(image_urls: list[str], caption: str, hashtags: str) 
     ).json()
     media_id = result.get("id", "")
     print(f"✅ Instagram carousel posted: {media_id}")
-
-    # 4. 해시태그 첫 댓글 등록
     if media_id and hashtags:
         time.sleep(3)
         _add_comment("instagram", media_id, hashtags, user_id, token)
-
     return result
 
 
 def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, topic_tag: str = "") -> dict:
-    """Threads Graph API v1.0 캐러셀(슬라이드) 게시
-
-    Instagram 가이드라인 반영:
-    - 슬라이드 형식으로 더 많은 도달 확보
-    - 해시태그 첫 댓글 분리
-    - topic_tag: ARTIFICIAL_INTELLIGENCE / TECHNOLOGY / FINANCE
-    """
+    """Threads Graph API v1.0 게시 (1장: 단일 이미지 / 2장+: 캐러셀)"""
     user_id = os.environ.get("THREADS_USER_ID", "")
     token   = os.environ.get("THREADS_ACCESS_TOKEN", "")
 
@@ -108,42 +112,59 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
 
     full_caption = caption + AI_FOOTER
 
-    # 1. 각 슬라이드 아이템 컨테이너 생성
+    # 단일 이미지 포스팅
+    if len(image_urls) == 1:
+        print("🧵 Threads 단일 이미지 게시 중...")
+        params = {"media_type": "IMAGE", "image_url": image_urls[0],
+                  "text": full_caption, "access_token": token}
+        if topic_tag:
+            params["topic_tag"] = topic_tag
+        res = requests.post(
+            f"https://graph.threads.net/v1.0/{user_id}/threads",
+            params=params, timeout=30
+        )
+        if not res.ok:
+            print(f"❌ Threads media container 오류: {res.status_code} - {res.text}")
+        res.raise_for_status()
+        container_id = res.json()["id"]
+        time.sleep(35)
+        result = requests.post(
+            f"https://graph.threads.net/v1.0/{user_id}/threads_publish",
+            params={"creation_id": container_id, "access_token": token},
+            timeout=30
+        ).json()
+        media_id = result.get("id", "")
+        print(f"✅ Threads posted: {media_id}")
+        if media_id and hashtags:
+            time.sleep(3)
+            _add_comment("threads", media_id, hashtags, user_id, token)
+        return result
+
+    # 캐러셀 포스팅 (2장 이상)
     print(f"🧵 Threads 슬라이드 컨테이너 생성 중... ({len(image_urls)}장)")
     child_ids = []
     for i, url in enumerate(image_urls):
         res = requests.post(
             f"https://graph.threads.net/v1.0/{user_id}/threads",
-            params={
-                "media_type":       "IMAGE",
-                "image_url":        url,
-                "is_carousel_item": "true",
-                "access_token":     token,
-            },
+            params={"media_type": "IMAGE", "image_url": url,
+                    "is_carousel_item": "true", "access_token": token},
             timeout=30
         )
         if not res.ok:
             print(f"❌ 슬라이드 {i+1} 컨테이너 오류: {res.status_code} - {res.text}")
         res.raise_for_status()
-        cid = res.json()["id"]
-        child_ids.append(cid)
-        print(f"  슬라이드 {i+1}/{len(image_urls)}: {cid}")
+        child_ids.append(res.json()["id"])
+        print(f"  슬라이드 {i+1}/{len(image_urls)}: {res.json()['id']}")
         time.sleep(2)
 
-    # 2. 캐러셀 컨테이너 생성
-    carousel_params = {
-        "media_type":   "CAROUSEL",
-        "children":     ",".join(child_ids),
-        "text":         full_caption,
-        "access_token": token,
-    }
+    carousel_params = {"media_type": "CAROUSEL", "children": ",".join(child_ids),
+                       "text": full_caption, "access_token": token}
     if topic_tag:
         carousel_params["topic_tag"] = topic_tag
         print(f"🏷️  Threads topic_tag: {topic_tag}")
     res = requests.post(
         f"https://graph.threads.net/v1.0/{user_id}/threads",
-        params=carousel_params,
-        timeout=30
+        params=carousel_params, timeout=30
     )
     if not res.ok:
         print(f"❌ Threads carousel container 오류: {res.status_code} - {res.text}")
@@ -151,7 +172,6 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
     container_id = res.json()["id"]
     print(f"🧵 Threads carousel container: {container_id}")
 
-    # 3. 게시 (35초 대기 후)
     time.sleep(35)
     result = requests.post(
         f"https://graph.threads.net/v1.0/{user_id}/threads_publish",
@@ -160,10 +180,7 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
     ).json()
     media_id = result.get("id", "")
     print(f"✅ Threads carousel posted: {media_id}")
-
-    # 4. 해시태그 첫 댓글 등록
     if media_id and hashtags:
         time.sleep(3)
         _add_comment("threads", media_id, hashtags, user_id, token)
-
     return result

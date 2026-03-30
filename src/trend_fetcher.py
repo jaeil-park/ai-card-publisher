@@ -29,6 +29,10 @@ CONTENT_META = {
     "openai_spotlight":  {"emoji": "🤖", "label": "OpenAI 스포트라이트"},
     "claude_spotlight":  {"emoji": "🧬", "label": "Claude AI 스포트라이트"},
     "coingecko_report":  {"emoji": "📈", "label": "CoinGecko AI 마켓"},
+    # ── 신규 추가 ───────────────────────────────────────────
+    "gemini_spotlight":  {"emoji": "✨", "label": "Google Gemini 스포트라이트"},
+    "kr_tech_news":      {"emoji": "🇰🇷", "label": "국내 테크 뉴스"},
+    "defi_web3":         {"emoji": "🌐", "label": "DeFi/Web3 트렌드"},
 }
 
 
@@ -56,12 +60,16 @@ def get_content_type() -> str:
         "vibe_coding",       # 화 (1)
         "openai_spotlight",  # 수 (2)
         "claude_spotlight",  # 목 (3)
-        "ai_tips",           # 금 (4)
-        "coingecko_report",  # 토 (5)
+        "gemini_spotlight",  # 금 (4) – Google AI 스포트라이트
+        "defi_web3",         # 토 (5) – DeFi/Web3 트렌드
         "weekly_review",     # 일 (6) – 20:00과 동일, 아래 조건에서 먼저 처리됨
     ]
     if hour >= 21:
         return _21H_ROTATION[weekday]
+
+    # 9시 슬롯: 짝수 요일(월수금일) → bigtech_news, 홀수(화목토) → kr_tech_news
+    if hour == 9:
+        return "bigtech_news" if weekday % 2 == 0 else "kr_tech_news"
 
     for h in sorted(CONTENT_SCHEDULE.keys(), reverse=True):
         if hour >= h:
@@ -351,6 +359,95 @@ def fetch_coingecko_ai_tokens() -> list[dict]:
         return fetch_crypto()  # 폴백: 일반 코인 시황
 
 
+def fetch_gemini_spotlight() -> list[dict]:
+    """Serper: Google Gemini / DeepMind 최신 공식 발표 및 동향"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": f"Google Gemini DeepMind AI 최신 업데이트 발표 {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ Gemini 뉴스 수집 실패: {e}")
+        return [{"title": "Google Gemini 최신 소식", "snippet": "Google AI 관련 최신 동향을 확인하세요", "link": ""}]
+
+
+def fetch_kr_tech_news() -> list[dict]:
+    """Serper: 국내 테크 뉴스 (네이버·카카오·삼성·LG AI 동향)"""
+    try:
+        res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": f"네이버 카카오 삼성 LG SK AI 인공지능 기술 뉴스 {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 6},
+            timeout=10
+        )
+        res.raise_for_status()
+        return [
+            {"title": i["title"], "snippet": i.get("snippet", ""),
+             "source": i.get("source", ""), "link": i.get("link", "")}
+            for i in res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ 국내 테크 뉴스 수집 실패: {e}")
+        return []
+
+
+def fetch_defi_web3() -> list[dict]:
+    """CoinGecko API: DeFi 프로토콜 시황 + Serper: Web3 최신 트렌드"""
+    results = []
+    # DeFi TVL 상위 코인
+    try:
+        res = requests.get(
+            "https://api.coingecko.com/api/v3/coins/markets",
+            params={
+                "vs_currency": "usd",
+                "category": "decentralized-finance-defi",
+                "order": "market_cap_desc",
+                "per_page": 5,
+                "price_change_percentage": "24h,7d",
+            },
+            timeout=10
+        )
+        res.raise_for_status()
+        results = [
+            {
+                "name":       c["name"],
+                "symbol":     c["symbol"].upper(),
+                "price_usd":  f"${c['current_price']:,.4f}",
+                "change_24h": f"{c.get('price_change_percentage_24h', 0):.2f}%",
+                "market_cap": f"${c.get('market_cap', 0) / 1e6:.1f}M",
+            }
+            for c in res.json()
+        ]
+    except Exception as e:
+        print(f"⚠️ DeFi 시황 수집 실패: {e}")
+
+    # Web3 최신 뉴스 보완
+    try:
+        news_res = requests.post(
+            "https://google.serper.dev/news",
+            headers={"X-API-KEY": os.environ.get("SERPER_API_KEY", "")},
+            json={"q": f"DeFi Web3 블록체인 탈중앙화 최신 트렌드 {datetime.now().year}", "gl": "kr", "hl": "ko", "num": 4},
+            timeout=10
+        )
+        news_res.raise_for_status()
+        results += [
+            {"title": i["title"], "snippet": i.get("snippet", ""), "link": i.get("link", "")}
+            for i in news_res.json().get("news", [])
+        ]
+    except Exception as e:
+        print(f"⚠️ Web3 뉴스 수집 실패: {e}")
+
+    return results
+
+
 def fetch_weekly_summary() -> list[dict]:
     """이번 주 AI 핵심 뉴스 (Serper 주간 검색)"""
     try:
@@ -419,6 +516,21 @@ def collect_data(content_type: str) -> dict:
         return {
             "crypto": fetch_coingecko_ai_tokens(),
             "news":   fetch_ai_news()[:3],
+        }
+    elif content_type == "gemini_spotlight":
+        return {
+            "news":   fetch_gemini_spotlight(),
+            "github": fetch_github_trending()[:2],
+        }
+    elif content_type == "kr_tech_news":
+        return {
+            "news":   fetch_kr_tech_news(),
+            "github": fetch_github_trending()[:2],
+        }
+    elif content_type == "defi_web3":
+        return {
+            "news":   fetch_defi_web3(),
+            "crypto": fetch_crypto()[:2],
         }
     return {}
 

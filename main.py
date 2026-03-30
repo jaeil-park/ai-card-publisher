@@ -6,7 +6,7 @@ load_dotenv()
 
 from src.token_manager import check_and_refresh_tokens
 from src.trend_fetcher import get_content_type, collect_data, CONTENT_META
-from src.content_generator import generate_facts, generate_caption
+from src.content_generator import generate_facts, generate_caption, generate_weekly_sections
 from src.background_maker import generate_background
 from src.html_renderer import render_html_sync
 from src.image_compositor import upload_image # Re-using the uploader
@@ -30,36 +30,54 @@ def main():
     data = collect_data(content_type)
     news_items = data.get("news", data.get("products", []))
 
-    # 3. [Task 1] GPT로 이미지용 팩트 추출
-    print("\n[1/5] 🤖 GPT-4o로 이미지용 팩트 추출 중...")
-    facts = generate_facts(theme=meta["label"], news=news_items)
-    title = facts.get("title")
-    print(f"  ✅ 제목: {title}")
+    # 3~5. 팩트 추출 → 배경 → 렌더링 (주간 리포트: 3장 / 일반: 1장)
+    if content_type == "weekly_review":
+        print("\n[1/5] 🤖 GPT-4o로 주간 써머리 3섹션 추출 중...")
+        all_sections = generate_weekly_sections(data)
+        title = all_sections[0].get("title", "주간 핵심 정리")
+        print(f"  ✅ {len(all_sections)}개 섹션 생성 완료")
 
-    # 4. [Task 2] 배경 이미지 준비
-    print("\n[2/5] 🎨 배경 이미지 준비 중...")
-    background_image_pil = generate_background(size=(1080, 1920))
-    bg_path = OUTPUT_DIR / "background.png"
-    background_image_pil.save(bg_path)
+        print(f"\n[2-3/5] 🎨 배경 생성 + Playwright 렌더링 중... ({len(all_sections)}장)")
+        image_urls = []
+        final_image_pil = None
+        for i, section_facts in enumerate(all_sections):
+            bg = generate_background(size=(1080, 1920))
+            bg_path = OUTPUT_DIR / f"bg_weekly_{i}.png"
+            bg.save(bg_path)
+            card_path = OUTPUT_DIR / f"weekly_card_{i}.png"
+            render_html_sync(section_facts, bg_path, card_path)
+            card_pil = Image.open(card_path)
+            if final_image_pil is None:
+                final_image_pil = card_pil
+            image_urls.append(upload_image(card_pil))
+            print(f"  ✅ 슬라이드 {i+1}/{len(all_sections)} 업로드 완료")
 
-    # 5. [Task 3] Playwright로 HTML 렌더링 및 스크린샷
-    print("\n[3/5] 🖼️  Playwright로 HTML 렌더링 및 스크린샷 중...")
-    final_image_path = OUTPUT_DIR / "final_card.png"
-    render_html_sync(facts, bg_path, final_image_path)
+        facts = all_sections[0]
+    else:
+        print("\n[1/5] 🤖 GPT-4o로 이미지용 팩트 추출 중...")
+        facts = generate_facts(theme=meta["label"], news=news_items)
+        title = facts.get("title")
+        print(f"  ✅ 제목: {title}")
 
-    # 6. [Task 4] GPT로 SNS 본문(캡션) 생성
+        print("\n[2/5] 🎨 배경 이미지 준비 중...")
+        bg_path = OUTPUT_DIR / "background.png"
+        generate_background(size=(1080, 1920)).save(bg_path)
+
+        print("\n[3/5] 🖼️  Playwright로 HTML 렌더링 및 스크린샷 중...")
+        final_image_path = OUTPUT_DIR / "final_card.png"
+        render_html_sync(facts, bg_path, final_image_path)
+        final_image_pil = Image.open(final_image_path)
+        image_urls = [upload_image(final_image_pil)]
+
+    # 캡션 생성
     print("\n[4/5] ✍️  GPT-4o로 SNS 본문 생성 중...")
     caption_full = generate_caption(facts, news_items)
-    # 캡션과 해시태그 분리
     caption_parts = caption_full.rsplit("#", 1)
     caption = caption_parts[0].strip()
     hashtags = f"#{caption_parts[1].strip()}" if len(caption_parts) > 1 else "#AI #FinTech #Gems"
 
-    # 7. 이미지 업로드 및 포스팅
-    print("\n[5/5] ☁️  이미지 업로드 및 SNS 포스팅 중...")
-    final_image_pil = Image.open(final_image_path)
-    image_url = upload_image(final_image_pil)
-    
+    # 포스팅
+    print("\n[5/5] ☁️  SNS 포스팅 중...")
     source_links = [n["link"] for n in news_items if n.get("link")][:2]
     threads_caption = caption
     if source_links:
@@ -67,8 +85,8 @@ def main():
 
     # Instagram & Threads 포스팅
     results = {}
-    ig_result = post_instagram_carousel([image_url], caption, hashtags)
-    th_result = post_threads_carousel([image_url], threads_caption, hashtags, "TECHNOLOGY")
+    ig_result = post_instagram_carousel(image_urls, caption, hashtags)
+    th_result = post_threads_carousel(image_urls, threads_caption, hashtags, "TECHNOLOGY")
     if ig_result.get("id"):
         results["instagram"] = ig_result
     if th_result.get("id"):
