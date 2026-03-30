@@ -9,7 +9,7 @@ import random
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 ASSETS_DIR = Path("assets")
 
-def generate_background(size: tuple = (1080, 1350)) -> Image.Image:
+def generate_background(size: tuple = (1080, 1350), dalle_prompt: str = "") -> Image.Image:
     """
     로컬 assets/image_*.png가 있으면 재활용하고, 없으면 DALL-E 3로 생성합니다.
     """
@@ -25,19 +25,27 @@ def generate_background(size: tuple = (1080, 1350)) -> Image.Image:
 
     print("🎨 로컬 배경 이미지가 없어 DALL-E 3로 새로 생성합니다.")
     width, height = size
-    prompt = f"""
-A photorealistic, clean background image for a tech news card.
-Theme: Dark data center, cyberpunk aesthetics, glowing data streams, abstract plexus network.
-Color Palette: Deep blues, purples, with accents of cyan and gold.
-Composition: Minimalist, with plenty of dark, empty space for text overlays.
-Crucially, there should be NO text, NO letters, NO numbers, NO user interface elements, and NO logos in the image.
-The image should be abstract and atmospheric.
+    if not dalle_prompt:
+        dalle_prompt = "A photorealistic, clean background image for a tech news card."
+        
+    enhanced_prompt = f"""
+{dalle_prompt}
+
+Style requirements:
+- Photorealistic, high resolution news photograph quality
+- Professional journalism photo style
+- Dark moody cinematic lighting with subtle blue/orange tones
+- No text overlays, no letters, no numbers, no graphics, no UI elements
+- No abstract art, no illustrations
+- Real-world scene that directly represents the news topic
+- Shot as if taken by a professional news photographer
+- Sharp focus on main subject, plenty of dark space for text overlays
 Aspect Ratio: {width}:{height}
 """
     try:
         response = client.images.generate(
             model="dall-e-3",
-            prompt=prompt,
+            prompt=enhanced_prompt,
             size="1024x1792", # DALL-E 3 supported sizes for 9:16
             quality="hd",
             style="natural",

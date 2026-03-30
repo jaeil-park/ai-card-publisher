@@ -16,18 +16,33 @@ def _truncate_for_threads(caption: str) -> str:
 
 def _add_comment(platform: str, media_id: str, text: str, user_id: str, token: str):
     """게시물에 첫 댓글 추가 (해시태그 분리 → 도달률 향상)"""
-    if platform == "instagram":
-        url = f"https://graph.instagram.com/v24.0/{media_id}/comments"
-        params = {"message": text, "access_token": token}
-    else:
-        url = f"https://graph.threads.net/v1.0/{media_id}/replies"
-        params = {"text": text, "access_token": token}
     try:
-        res = requests.post(url, params=params, timeout=15)
-        if res.ok:
-            print(f"💬 첫 댓글(해시태그) 등록 완료")
+        if platform == "instagram":
+            url = f"https://graph.instagram.com/v24.0/{media_id}/comments"
+            params = {"message": text, "access_token": token}
+            res = requests.post(url, params=params, timeout=15)
+            if res.ok:
+                print(f"💬 첫 댓글(해시태그) 등록 완료")
+            else:
+                print(f"⚠️ 첫 댓글 등록 실패: {res.status_code} - {res.text}")
         else:
-            print(f"⚠️ 첫 댓글 등록 실패: {res.status_code}")
+            # Threads 댓글(Reply)은 일반 포스트처럼 2단계(생성->발행)로 진행해야 함
+            container_url = f"https://graph.threads.net/v1.0/{user_id}/threads"
+            container_params = {"media_type": "TEXT", "text": text, "reply_to_id": media_id, "access_token": token}
+            res = requests.post(container_url, params=container_params, timeout=15)
+            
+            if not res.ok:
+                print(f"⚠️ Threads 댓글 컨테이너 생성 실패: {res.status_code} - {res.text}")
+                return
+                
+            container_id = res.json()["id"]
+            time.sleep(5)  # 컨테이너 준비 대기
+            
+            pub_res = requests.post(f"https://graph.threads.net/v1.0/{user_id}/threads_publish", params={"creation_id": container_id, "access_token": token}, timeout=15)
+            if pub_res.ok:
+                print(f"💬 첫 댓글(해시태그) 등록 완료")
+            else:
+                print(f"⚠️ Threads 댓글 발행 실패: {pub_res.status_code} - {pub_res.text}")
     except Exception as e:
         print(f"⚠️ 첫 댓글 등록 오류: {e}")
 

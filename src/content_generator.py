@@ -16,15 +16,17 @@ def generate_facts(theme: str, news: list) -> dict:
 2.  **핵심 팩트 (points):** 반드시 3개 항목으로 구성.
     - **subtitle:** 각 팩트의 소주제. **매우 짧고 강렬하게, 1~2줄 이내로 요약 (25자 이내).** 상세 설명은 캡션에 들어갈 것이므로, 여기서는 핵심만 언급.
     - **source:** 정보 출처 (10자 이내, 예: 'OpenAI', 'CoinGecko').
-3.  **엄격한 JSON 형식 준수:** 다른 설명 없이 JSON 객체만 반환해야 합니다.
+3.  **이미지 프롬프트 (dalle_prompt):** 주제와 직접 연관된 photorealistic 뉴스 사진 장면 묘사 (영문, 100자 이내).
+4.  **엄격한 JSON 형식 준수:** 다른 설명 없이 JSON 객체만 반환해야 합니다.
 
 [입력 데이터]
 테마: {theme}
 뉴스 기사: {json.dumps(news, ensure_ascii=False)}
 
 [출력 JSON 형식]
-{{  "title": "AI와 금융의 미래를 바꿀 3가지 팩트",
+{{
   "title": "AI와 금융의 미래를 바꿀 3가지 팩트",
+  "dalle_prompt": "Bitcoin gold coin on dark financial chart, photorealistic, cinematic lighting",
   "points": [
     {{
       "subtitle": "GPT-5, 인간 전문가 수준 초월 예측",

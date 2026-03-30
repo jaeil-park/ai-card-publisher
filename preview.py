@@ -23,6 +23,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # ── 더미 콘텐츠 (--mock 모드) ───────────────────────────────
 MOCK_FACTS = {
   "title": "AI와 금융의 미래를 바꿀 3가지 팩트 (Mock)",
+  "dalle_prompt": "Bitcoin gold coin on dark financial chart, photorealistic, cinematic lighting",
   "points": [
     {
       "subtitle": "GPT-5, 인간 전문가 수준 초월 예측",
@@ -83,7 +84,7 @@ def run_real():
     print(f"  ✅ 제목: {facts.get('title')}")
 
     print("\n[2/3] 🎨 배경 이미지 준비 중...")
-    background_image_pil = generate_background(size=(1080, 1350))
+    background_image_pil = generate_background(size=(1080, 1350), dalle_prompt=facts.get("dalle_prompt", ""))
     bg_path = OUTPUT_DIR / "preview_real_bg.png"
     background_image_pil.save(bg_path)
 

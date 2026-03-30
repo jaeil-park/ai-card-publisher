@@ -41,7 +41,7 @@ def main():
         image_urls = []
         final_image_pil = None
         for i, section_facts in enumerate(all_sections):
-            bg = generate_background(size=(1080, 1350))
+            bg = generate_background(size=(1080, 1350), dalle_prompt=section_facts.get("dalle_prompt", ""))
             bg_path = OUTPUT_DIR / f"bg_weekly_{i}.png"
             bg.save(bg_path)
             card_path = OUTPUT_DIR / f"weekly_card_{i}.png"
@@ -61,7 +61,7 @@ def main():
 
         print("\n[2/5] 🎨 배경 이미지 준비 중...")
         bg_path = OUTPUT_DIR / "background.png"
-        generate_background(size=(1080, 1350)).save(bg_path)
+        generate_background(size=(1080, 1350), dalle_prompt=facts.get("dalle_prompt", "")).save(bg_path)
 
         print("\n[3/5] 🖼️  Playwright로 HTML 렌더링 및 스크린샷 중...")
         final_image_path = OUTPUT_DIR / "final_card.png"
