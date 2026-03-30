@@ -9,7 +9,7 @@ import random
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 ASSETS_DIR = Path("assets")
 
-def generate_background(size: tuple = (1080, 1920)) -> Image.Image:
+def generate_background(size: tuple = (1080, 1350)) -> Image.Image:
     """
     로컬 assets/image_*.png가 있으면 재활용하고, 없으면 DALL-E 3로 생성합니다.
     """

@@ -48,10 +48,10 @@ def run_mock():
     print("🧪 Mock 모드: API 호출 없이 더미 데이터로 HTML 렌더링")
 
     # 임시 단색 배경 생성
-    bg_pil = Image.new("RGBA", (1080, 1920), (4, 5, 18))
+    bg_pil = Image.new("RGBA", (1080, 1350), (4, 5, 18))
     draw = ImageDraw.Draw(bg_pil)
-    for y in range(1920):
-        t = y / 1920
+    for y in range(1350):
+        t = y / 1350
         v = int(58 * t * (1-t) * 4)
         draw.line([(0, y), (1080, y)], fill=(5+v//3, 10+v//2, 28+v, 255))
     
@@ -83,7 +83,7 @@ def run_real():
     print(f"  ✅ 제목: {facts.get('title')}")
 
     print("\n[2/3] 🎨 배경 이미지 준비 중...")
-    background_image_pil = generate_background(size=(1080, 1920))
+    background_image_pil = generate_background(size=(1080, 1350))
     bg_path = OUTPUT_DIR / "preview_real_bg.png"
     background_image_pil.save(bg_path)
 
