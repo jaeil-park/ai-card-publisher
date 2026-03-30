@@ -3,6 +3,15 @@ import time
 import requests
 
 AI_FOOTER = "\n\n✨ AI가 큐레이션한 콘텐츠입니다 | 매일 AI·코인·증시 트렌드 👉 팔로우"
+THREADS_MAX_LEN = 500
+
+
+def _truncate_for_threads(caption: str) -> str:
+    """Threads API 500자 제한 대응: AI_FOOTER 포함해서 500자 이내로 자름"""
+    max_body = THREADS_MAX_LEN - len(AI_FOOTER) - 1  # -1 for ellipsis
+    if len(caption) > max_body:
+        return caption[:max_body] + "…"
+    return caption
 
 
 def _add_comment(platform: str, media_id: str, text: str, user_id: str, token: str):
@@ -110,7 +119,7 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
         print("⏭️  Threads 미설정 - 스킵")
         return {}
 
-    full_caption = caption + AI_FOOTER
+    full_caption = _truncate_for_threads(caption) + AI_FOOTER
 
     # 단일 이미지 포스팅
     if len(image_urls) == 1:
