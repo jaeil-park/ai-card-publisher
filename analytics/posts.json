@@ -485,6 +485,26 @@
       "posted_at": "2026-04-01T10:12:15.525387+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18121510135720327",
+      "platform": "instagram",
+      "content_type": "openai_spotlight",
+      "highlight": "OpenAI",
+      "title": "GPT-5.4의 혁신과 도약",
+      "posted_at": "2026-04-01T12:56:02.059297+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18107608375873024",
+      "platform": "threads",
+      "content_type": "openai_spotlight",
+      "highlight": "OpenAI",
+      "title": "GPT-5.4의 혁신과 도약",
+      "posted_at": "2026-04-01T12:56:02.059297+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
