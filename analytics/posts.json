@@ -641,6 +641,26 @@
       "posted_at": "2026-04-02T10:07:27.865746+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18039300554569012",
+      "platform": "instagram",
+      "content_type": "claude_spotlight",
+      "highlight": "Claude AI",
+      "title": "클로드 AI 워크플로우 혁신",
+      "posted_at": "2026-04-02T12:48:45.735346+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18036950966784586",
+      "platform": "threads",
+      "content_type": "claude_spotlight",
+      "highlight": "Claude AI",
+      "title": "클로드 AI 워크플로우 혁신",
+      "posted_at": "2026-04-02T12:48:45.735346+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
