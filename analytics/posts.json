@@ -581,6 +581,26 @@
       "posted_at": "2026-04-02T01:08:25.731645+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18095575181090300",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변화의 3대 요인",
+      "posted_at": "2026-04-02T04:59:18.149697+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18405522052179561",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변화의 3대 요인",
+      "posted_at": "2026-04-02T04:59:18.149697+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
