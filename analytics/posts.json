@@ -737,6 +737,26 @@
       "posted_at": "2026-04-03T01:10:44.066806+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17984482994972874",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 시황의 변화 3가지 핵심",
+      "posted_at": "2026-04-03T05:00:44.442094+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17877184554558713",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 시황의 변화 3가지 핵심",
+      "posted_at": "2026-04-03T05:00:44.442094+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
