@@ -893,6 +893,26 @@
       "posted_at": "2026-04-04T01:05:05.865263+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18107099833883542",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "새로운 경제 주도 트렌드 3",
+      "posted_at": "2026-04-04T04:46:47.984227+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18132318031550248",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "새로운 경제 주도 트렌드 3",
+      "posted_at": "2026-04-04T04:46:47.984227+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
