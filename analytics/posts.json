@@ -1029,6 +1029,26 @@
       "posted_at": "2026-04-05T01:13:33.540589+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18090731992929118",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장을 움직이는 최신 뉴스 3선",
+      "posted_at": "2026-04-05T05:07:38.675199+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18323526478301814",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장을 움직이는 최신 뉴스 3선",
+      "posted_at": "2026-04-05T05:07:38.675199+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
