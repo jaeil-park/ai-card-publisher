@@ -1321,6 +1321,26 @@
       "posted_at": "2026-04-06T12:47:56.089885+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18113425078781004",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장의 변화를 이끄는 3가지 키포인트",
+      "posted_at": "2026-04-07T05:05:00.003926+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17872945707585098",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장의 변화를 이끄는 3가지 키포인트",
+      "posted_at": "2026-04-07T05:05:00.003926+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
