@@ -1531,6 +1531,26 @@
       "posted_at": "2026-04-08T10:14:53.798355+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18032830499790222",
+      "platform": "instagram",
+      "content_type": "openai_spotlight",
+      "highlight": "OpenAI",
+      "title": "OpenAI 혁신 3가지 포인트",
+      "posted_at": "2026-04-08T12:58:04.838105+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17952908309960673",
+      "platform": "threads",
+      "content_type": "openai_spotlight",
+      "highlight": "OpenAI",
+      "title": "OpenAI 혁신 3가지 포인트",
+      "posted_at": "2026-04-08T12:58:04.838105+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
