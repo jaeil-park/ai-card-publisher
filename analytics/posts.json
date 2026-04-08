@@ -1359,8 +1359,14 @@
       "highlight": "마켓",
       "title": "시장의 변화를 이끄는 3가지 키포인트",
       "posted_at": "2026-04-07T05:05:00.003926+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-08T22:51:04.894939+00:00"
     },
     {
       "media_id": "17872945707585098",
@@ -1379,8 +1385,14 @@
       "highlight": "AI툴",
       "title": "스타트업 트렌드의 핵심 변화",
       "posted_at": "2026-04-07T07:05:03.737920+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-08T22:51:04.894939+00:00"
     },
     {
       "media_id": "18333375250222662",
@@ -1399,8 +1411,14 @@
       "highlight": "AI툴",
       "title": "AI 혁신 주도 최신 트렌드",
       "posted_at": "2026-04-07T10:16:11.224612+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-08T22:51:04.894939+00:00"
     },
     {
       "media_id": "18180424126383108",
@@ -1419,8 +1437,14 @@
       "highlight": "바이브코딩",
       "title": "바이브 코딩 시대가 온다",
       "posted_at": "2026-04-07T12:57:51.661733+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-08T22:51:04.894939+00:00"
     },
     {
       "media_id": "18099615676961576",
@@ -1439,8 +1463,14 @@
       "highlight": "AI툴",
       "title": "AI 혁신이 주는 새 물결",
       "posted_at": "2026-04-07T21:34:53.648175+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-08T22:51:04.894939+00:00"
     },
     {
       "media_id": "18094320968329007",
