@@ -1621,6 +1621,26 @@
       "posted_at": "2026-04-09T01:03:00.847188+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17911630092181538",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장을 흔드는 3대 뉴스",
+      "posted_at": "2026-04-09T05:05:15.459763+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18094135783887091",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장을 흔드는 3대 뉴스",
+      "posted_at": "2026-04-09T05:05:15.459763+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
