@@ -1681,6 +1681,26 @@
       "posted_at": "2026-04-09T10:19:31.205620+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18117315079661252",
+      "platform": "instagram",
+      "content_type": "claude_spotlight",
+      "highlight": "Claude AI",
+      "title": "Claude AI 시대 도래",
+      "posted_at": "2026-04-09T13:00:02.539026+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17900527062416427",
+      "platform": "threads",
+      "content_type": "claude_spotlight",
+      "highlight": "Claude AI",
+      "title": "Claude AI 시대 도래",
+      "posted_at": "2026-04-09T13:00:02.539026+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
