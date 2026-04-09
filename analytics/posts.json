@@ -1601,6 +1601,26 @@
       "posted_at": "2026-04-08T21:34:58.582274+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18318745366281064",
+      "platform": "instagram",
+      "content_type": "bigtech_news",
+      "highlight": "AI툴",
+      "title": "빅테크의 AI 칩 주권 경쟁",
+      "posted_at": "2026-04-09T01:03:00.847188+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18009077069894497",
+      "platform": "threads",
+      "content_type": "bigtech_news",
+      "highlight": "AI툴",
+      "title": "빅테크의 AI 칩 주권 경쟁",
+      "posted_at": "2026-04-09T01:03:00.847188+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
