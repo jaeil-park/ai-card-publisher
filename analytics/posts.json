@@ -1777,6 +1777,26 @@
       "posted_at": "2026-04-10T01:12:57.715630+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17873739015591317",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "변화의 물결: 시장 시황",
+      "posted_at": "2026-04-10T05:19:16.616915+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18004693292890327",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "변화의 물결: 시장 시황",
+      "posted_at": "2026-04-10T05:19:16.616915+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
