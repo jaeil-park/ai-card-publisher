@@ -2089,6 +2089,26 @@
       "posted_at": "2026-04-12T01:17:02.612259+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18116684554661057",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변화의 새로운 신호",
+      "posted_at": "2026-04-12T05:17:39.638436+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17914840257167767",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변화의 새로운 신호",
+      "posted_at": "2026-04-12T05:17:39.638436+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
