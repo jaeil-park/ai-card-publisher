@@ -2427,6 +2427,26 @@
       "posted_at": "2026-04-14T01:17:41.841932+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18087598093998458",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변동의 핵심 3가지",
+      "posted_at": "2026-04-14T05:17:04.886614+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18322755613269759",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변동의 핵심 3가지",
+      "posted_at": "2026-04-14T05:17:04.886614+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
