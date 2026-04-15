@@ -2583,6 +2583,26 @@
       "posted_at": "2026-04-15T01:15:43.129169+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18092947778228347",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변동을 좌우할 3가지 이슈",
+      "posted_at": "2026-04-15T05:17:50.953210+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18059996762450064",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 변동을 좌우할 3가지 이슈",
+      "posted_at": "2026-04-15T05:17:50.953210+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
