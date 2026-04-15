@@ -2643,6 +2643,26 @@
       "posted_at": "2026-04-15T10:22:25.646106+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18122579947619351",
+      "platform": "instagram",
+      "content_type": "openai_spotlight",
+      "highlight": "OpenAI",
+      "title": "OpenAI 혁신의 물결",
+      "posted_at": "2026-04-15T13:00:42.321410+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18155525332454553",
+      "platform": "threads",
+      "content_type": "openai_spotlight",
+      "highlight": "OpenAI",
+      "title": "OpenAI 혁신의 물결",
+      "posted_at": "2026-04-15T13:00:42.321410+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
