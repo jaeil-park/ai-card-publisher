@@ -2739,6 +2739,26 @@
       "posted_at": "2026-04-16T01:20:30.537368+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17871640299598469",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "최신 시장 트렌드 3가지",
+      "posted_at": "2026-04-16T05:25:01.069221+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18048708845726662",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "최신 시장 트렌드 3가지",
+      "posted_at": "2026-04-16T05:25:01.069221+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
