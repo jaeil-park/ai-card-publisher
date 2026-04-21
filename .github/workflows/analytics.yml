@@ -53,4 +53,4 @@ jobs:
           git config user.name "GitHub Actions"
           git add analytics/posts.json
           git diff --staged --quiet || git commit -m "📊 analytics: update insights data [skip ci]"
-          git push
+          git pull --rebase && git push

@@ -35,7 +35,7 @@ jobs:
           git config user.name "GitHub Actions"
           [ -f .token_status.json ] && git add .token_status.json
           git diff --staged --quiet || git commit -m "🔑 auto: update token status [skip ci]"
-          git push
+          git pull --rebase && git push
 
       - name: 📢 Notify on failure
         if: failure()
