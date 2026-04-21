@@ -1,0 +1,29 @@
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  background: #000;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+.card-preview-wrapper {
+  width: min(1080px, 100vw);
+  aspect-ratio: 1 / 1;
+}
+
+.card-preview-wrapper .card {
+  width: 1080px;
+  height: 1080px;
+  transform-origin: top left;
+  transform: scale(calc(min(100vw, 1080px) / 1080));
+}

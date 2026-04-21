@@ -1,0 +1,124 @@
+@font-face {
+  font-family: 'Nanum Gothic';
+  src: url('/fonts/NanumGothic-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Nanum Gothic';
+  src: url('/fonts/NanumGothic-Bold.ttf') format('truetype');
+  font-weight: 700 800;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.card {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+  font-family: 'Nanum Gothic', sans-serif;
+  background: #14141e;
+}
+
+.card__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 전체 어두운 필터 */
+.card__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.30);
+}
+
+/* 하단 패널 그라데이션 */
+.card__panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.80) 30%,
+    rgba(0, 0, 0, 0.88) 100%
+  );
+}
+
+/* 상단 배지 바 */
+.card__topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 10;
+}
+
+.card__badge {
+  font-size: 26px;
+  font-weight: 700;
+  color: #50dcff;
+  letter-spacing: 1px;
+}
+
+.card__date {
+  font-size: 24px;
+  color: rgba(220, 220, 220, 0.9);
+}
+
+/* 텍스트 영역 */
+.card__content {
+  position: absolute;
+  bottom: 56px;
+  left: 56px;
+  right: 56px;
+  z-index: 10;
+}
+
+.card__title {
+  font-size: 60px;
+  font-weight: 800;
+  color: #ffdc00;
+  line-height: 1.25;
+  margin-bottom: 28px;
+  word-break: keep-all;
+}
+
+.card__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card__summary-line {
+  font-size: 32px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.90);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+/* 워터마크 */
+.card__watermark {
+  position: absolute;
+  bottom: 18px;
+  right: 28px;
+  font-size: 22px;
+  color: rgba(180, 180, 180, 0.65);
+  z-index: 10;
+}

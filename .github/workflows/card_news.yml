@@ -26,13 +26,11 @@ jobs:
       - name: 🔐 Load ENV
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
-      - name: 🔤 Install Korean Font (Fast)
-        run: |
-          sudo mkdir -p /usr/share/fonts/truetype/nanum
-          sudo curl -s -o /usr/share/fonts/truetype/nanum/NanumGothic.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Regular.ttf
-          sudo curl -s -o /usr/share/fonts/truetype/nanum/NanumGothicBold.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Bold.ttf
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install Python dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
@@ -48,6 +46,9 @@ jobs:
         run: |
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then playwright install chromium; fi
           playwright install-deps chromium
+
+      - name: 🔨 Build card-ui
+        run: npm ci --prefix card-ui && npm run build --prefix card-ui
 
       - name: 🚀 Run Card News Pipeline
         env:

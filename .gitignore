@@ -43,3 +43,7 @@ Thumbs.db
 .idea/
 .vscode/
 .claude/
+
+# ── React card-ui ──────────────────────────────────────────
+card-ui/node_modules/
+card-ui-dist/
