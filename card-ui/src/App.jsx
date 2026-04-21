@@ -10,14 +10,16 @@ const DEMO_POINTS = [
 ]
 
 function App() {
-  const title  = params.get('title')  ?? 'AI와 금융의 미래를 바꿀 3가지 팩트'
-  const bgUrl  = params.get('bg_url') ?? ''
+  const title      = params.get('title')  ?? 'AI와 금융의 미래를 바꿀 3가지 팩트'
+  const bgUrl      = params.get('bg_url') ?? ''
+  const slideIndex = params.has('slide_index') ? Number(params.get('slide_index')) : null
+  const totalSlides = params.has('total_slides') ? Number(params.get('total_slides')) : null
   const points = (() => {
     try { return JSON.parse(params.get('points') ?? 'null') || DEMO_POINTS }
     catch { return DEMO_POINTS }
   })()
 
-  const card = <CardNews title={title} points={points} bgUrl={bgUrl} />
+  const card = <CardNews title={title} points={points} bgUrl={bgUrl} slideIndex={slideIndex} totalSlides={totalSlides} />
 
   if (isHeadless) return card
   return <div className="card-preview-wrapper">{card}</div>

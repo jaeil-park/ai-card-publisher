@@ -112,6 +112,33 @@
   font-weight: 300;
 }
 
+/* 주간 리포트 상단 바 */
+.card__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card__weekly-badge {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #a5f3fc;
+  text-transform: uppercase;
+  background: rgba(165, 243, 252, 0.12);
+  border: 1px solid rgba(165, 243, 252, 0.35);
+  border-radius: 999px;
+  padding: 6px 20px;
+}
+
+.card__slide-indicator {
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.50);
+  letter-spacing: 2px;
+}
+
 /* 브라우저 미리보기 자동 축소 */
 .card-preview-wrapper {
   width: min(1080px, 100vw);

@@ -44,7 +44,8 @@ def main():
             bg = generate_background(size=(1080, 1350), dalle_prompt=section_facts.get("dalle_prompt", ""))
             bg_path = OUTPUT_DIR / f"bg_weekly_{i}.png"
             bg.save(bg_path)
-            png = render_card_png(section_facts, bg_image_path=bg_path)
+            png = render_card_png(section_facts, bg_image_path=bg_path,
+                                  slide_index=i+1, total_slides=len(all_sections))
             card_path = OUTPUT_DIR / f"weekly_card_{i}.png"
             card_path.write_bytes(png)
             card_pil = Image.open(card_path)

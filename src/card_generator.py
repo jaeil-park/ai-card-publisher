@@ -39,7 +39,8 @@ def _start_server(directory: Path, port: int) -> HTTPServer:
     return srv
 
 
-def render_card_png(content: dict, bg_image_path: Path = None) -> bytes:
+def render_card_png(content: dict, bg_image_path: Path = None,
+                    slide_index: int = None, total_slides: int = None) -> bytes:
     """React 카드를 Playwright로 1080×1350 PNG 렌더링.
 
     content 필수 키: title, points (list of {subtitle, source})
@@ -57,13 +58,18 @@ def render_card_png(content: dict, bg_image_path: Path = None) -> bytes:
         shutil.copy2(bg_image_path, tmp_bg)
         bg_url = "./_bg_temp.png"
 
-    params = urlencode({
+    qs = {
         "title":  content.get("title", ""),
         "points": json.dumps(content.get("points", []), ensure_ascii=False),
         "bg_url": bg_url,
         "date":   kst_date,
         "render": "1",
-    }, quote_via=quote)
+    }
+    if slide_index is not None:
+        qs["slide_index"] = str(slide_index)
+    if total_slides is not None:
+        qs["total_slides"] = str(total_slides)
+    params = urlencode(qs, quote_via=quote)
 
     port   = _free_port()
     server = _start_server(DIST_DIR, port)

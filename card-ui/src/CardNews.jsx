@@ -1,7 +1,8 @@
 import './CardNews.css'
 
-export default function CardNews({ title, points, bgUrl }) {
+export default function CardNews({ title, points, bgUrl, slideIndex, totalSlides }) {
   const bgStyle = bgUrl ? { backgroundImage: `url(${bgUrl})` } : {}
+  const isWeekly = slideIndex != null && totalSlides != null
 
   return (
     <div className="card">
@@ -9,6 +10,13 @@ export default function CardNews({ title, points, bgUrl }) {
       <div className="card__gradient" />
 
       <div className="card__inner">
+        {isWeekly && (
+          <div className="card__topbar">
+            <span className="card__weekly-badge">WEEKLY REPORT</span>
+            <span className="card__slide-indicator">{slideIndex} / {totalSlides}</span>
+          </div>
+        )}
+
         <h1 className="card__title">{title}</h1>
 
         <div className="card__points">

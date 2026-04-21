@@ -11,8 +11,12 @@
 - [x] Discord Analytics 리포트 (일간·주간)
 - [x] 토큰 자동 갱신 워크플로우
 
+## ✅ 완료 (추가)
+- [x] React card-ui를 실제 파이프라인에 연결 (card_generator.py + main.py)
+- [x] Glassmorphism 카드 디자인 (1080×1350, backdrop-filter blur)
+- [x] 로컬 배경 이미지 서빙 (dist 임시 복사 → Playwright → 삭제)
+- [x] Naver API 키 등록 완료
+
 ## 📌 백로그
-- [ ] Naver API 키 등록 및 ENV_FILE 업데이트
-- [ ] 카드 디자인 개선 (card-ui/src/CardNews.css)
 - [ ] 주간 리포트 슬라이드 React 컴포넌트 적용
 - [ ] preview.py → card-ui dev server 연동으로 교체
