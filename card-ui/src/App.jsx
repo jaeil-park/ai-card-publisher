@@ -1,22 +1,25 @@
 import CardNews from './CardNews'
 
-function getParam(key, fallback = '') {
-  return new URLSearchParams(window.location.search).get(key) ?? fallback
-}
+const params = new URLSearchParams(window.location.search)
+const isHeadless = params.has('render')
 
-// Playwright는 ?render=1 파라미터로 호출 → wrapper 없이 .card만 렌더
-const isHeadless = new URLSearchParams(window.location.search).has('render')
+const DEMO_POINTS = [
+  { subtitle: 'GPT-5, 인간 전문가 수준 초월 예측', source: 'arXiv' },
+  { subtitle: 'Claude 3.5, 환각 현상 구조적 제어', source: 'Anthropic' },
+  { subtitle: '온체인 데이터 분석으로 상관관계 발견', source: 'CoinGecko' },
+]
 
 function App() {
-  const title   = getParam('title',   '오늘의 시장 흐름')
-  const summary = getParam('summary', '비트코인 1.56%↑, 알트코인도 강세.\n코스피 2.45%↑, 강한 회복세.\n글로벌 증시 혼조, 투자 주의 필요.')
-  const bgUrl   = getParam('bg_url',  '')
-  const date    = getParam('date',    new Date().toISOString().slice(0, 10).replace(/-/g, '.'))
+  const title  = params.get('title')  ?? 'AI와 금융의 미래를 바꿀 3가지 팩트'
+  const bgUrl  = params.get('bg_url') ?? ''
+  const points = (() => {
+    try { return JSON.parse(params.get('points') ?? 'null') || DEMO_POINTS }
+    catch { return DEMO_POINTS }
+  })()
 
-  const card = <CardNews title={title} summary={summary} bgUrl={bgUrl} date={date} />
+  const card = <CardNews title={title} points={points} bgUrl={bgUrl} />
 
   if (isHeadless) return card
-
   return <div className="card-preview-wrapper">{card}</div>
 }
 

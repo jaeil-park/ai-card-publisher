@@ -1,32 +1,29 @@
 import './CardNews.css'
 
-export default function CardNews({ title, summary, bgUrl, date }) {
-  const lines = summary ? summary.split('\n').slice(0, 3) : []
-
-  const bgStyle = bgUrl
-    ? { backgroundImage: `url(${bgUrl})` }
-    : { background: '#14141e' }
+export default function CardNews({ title, points, bgUrl }) {
+  const bgStyle = bgUrl ? { backgroundImage: `url(${bgUrl})` } : {}
 
   return (
     <div className="card">
       <div className="card__bg" style={bgStyle} />
-      <div className="card__panel" />
+      <div className="card__gradient" />
 
-      <header className="card__topbar">
-        <span className="card__badge">🤖 AI DAILY</span>
-        <span className="card__date">{date}</span>
-      </header>
-
-      <main className="card__content">
+      <div className="card__inner">
         <h1 className="card__title">{title}</h1>
-        <div className="card__summary">
-          {lines.map((line, i) => (
-            <p key={i} className="card__summary-line">{line}</p>
+
+        <div className="card__points">
+          {points.map((point, i) => (
+            <div key={i} className="card__glass">
+              <h2 className="card__subtitle">{point.subtitle}</h2>
+              <p className="card__source">출처: {point.source}</p>
+            </div>
           ))}
         </div>
-      </main>
 
-      <footer className="card__watermark">✨ AI Generated Content</footer>
+        <footer className="card__footer">
+          GEMS <span>|</span> @GEMS.OFFICIAL
+        </footer>
+      </div>
     </div>
   )
 }

@@ -8,8 +8,8 @@ from src.token_manager import check_and_refresh_tokens
 from src.trend_fetcher import get_content_type, collect_data, CONTENT_META
 from src.content_generator import generate_facts, generate_caption, generate_weekly_sections
 from src.background_maker import generate_background
-from src.html_renderer import render_html_sync
-from src.image_compositor import upload_image # Re-using the uploader
+from src.card_generator import render_card_png
+from src.image_compositor import upload_image
 from src.analytics import record_post, notify_posted
 from src.poster import post_instagram_carousel, post_threads_carousel
 from src.highlight_manager import get_highlight, create_story_cover, print_highlight_guide
@@ -37,15 +37,16 @@ def main():
         title = all_sections[0].get("title", "주간 핵심 정리")
         print(f"  ✅ {len(all_sections)}개 섹션 생성 완료")
 
-        print(f"\n[2-3/5] 🎨 배경 생성 + Playwright 렌더링 중... ({len(all_sections)}장)")
+        print(f"\n[2-3/5] 🎨 배경 생성 + React 렌더링 중... ({len(all_sections)}장)")
         image_urls = []
         final_image_pil = None
         for i, section_facts in enumerate(all_sections):
             bg = generate_background(size=(1080, 1350), dalle_prompt=section_facts.get("dalle_prompt", ""))
             bg_path = OUTPUT_DIR / f"bg_weekly_{i}.png"
             bg.save(bg_path)
+            png = render_card_png(section_facts, bg_image_path=bg_path)
             card_path = OUTPUT_DIR / f"weekly_card_{i}.png"
-            render_html_sync(section_facts, bg_path, card_path)
+            card_path.write_bytes(png)
             card_pil = Image.open(card_path)
             if final_image_pil is None:
                 final_image_pil = card_pil
@@ -63,9 +64,10 @@ def main():
         bg_path = OUTPUT_DIR / "background.png"
         generate_background(size=(1080, 1350), dalle_prompt=facts.get("dalle_prompt", "")).save(bg_path)
 
-        print("\n[3/5] 🖼️  Playwright로 HTML 렌더링 및 스크린샷 중...")
+        print("\n[3/5] 🖼️  React + Playwright로 카드 렌더링 중...")
         final_image_path = OUTPUT_DIR / "final_card.png"
-        render_html_sync(facts, bg_path, final_image_path)
+        png = render_card_png(facts, bg_image_path=bg_path)
+        final_image_path.write_bytes(png)
         final_image_pil = Image.open(final_image_path)
         image_urls = [upload_image(final_image_pil)]
 
