@@ -3491,8 +3491,14 @@
       "highlight": "AI툴",
       "title": "AI 신제품 세상 속으로",
       "posted_at": "2026-04-20T10:55:45.017044+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-21T22:46:22.922527+00:00"
     },
     {
       "media_id": "18224738440314783",
@@ -3511,8 +3517,14 @@
       "highlight": "AI툴",
       "title": "AI혁명: 뉴스의 새로운 물결",
       "posted_at": "2026-04-20T13:06:20.928055+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-21T22:46:22.922527+00:00"
     },
     {
       "media_id": "17952786134964979",
@@ -3531,8 +3543,14 @@
       "highlight": "AI툴",
       "title": "AI 뉴스의 현재와 미래",
       "posted_at": "2026-04-20T21:37:37.507073+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-04-21T22:46:22.922527+00:00"
     },
     {
       "media_id": "17980047384005936",
