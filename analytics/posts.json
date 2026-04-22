@@ -3761,6 +3761,26 @@
       "posted_at": "2026-04-22T01:15:45.311313+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17869741746504908",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "글로벌 시장, 3가지 핵심 동향",
+      "posted_at": "2026-04-22T05:18:48.591250+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17993156324778709",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "글로벌 시장, 3가지 핵심 동향",
+      "posted_at": "2026-04-22T05:18:48.591250+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
