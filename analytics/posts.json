@@ -3935,6 +3935,26 @@
       "posted_at": "2026-04-23T01:21:03.615701+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17922298413122393",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "최신 시장 동향: 3대 핵심 분석",
+      "posted_at": "2026-04-23T05:24:11.292430+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18142996192501066",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "최신 시장 동향: 3대 핵심 분석",
+      "posted_at": "2026-04-23T05:24:11.292430+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
