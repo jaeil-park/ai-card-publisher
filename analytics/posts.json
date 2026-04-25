@@ -4247,6 +4247,26 @@
       "posted_at": "2026-04-25T01:13:35.217296+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "17876783289444553",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 시황 핵심 3가지 팩트",
+      "posted_at": "2026-04-25T05:06:42.540177+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17884287783533333",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 시황 핵심 3가지 팩트",
+      "posted_at": "2026-04-25T05:06:42.540177+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
