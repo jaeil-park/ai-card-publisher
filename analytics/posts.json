@@ -4503,6 +4503,26 @@
       "posted_at": "2026-04-26T12:42:29.567738+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18322921303253071",
+      "platform": "instagram",
+      "content_type": "morning_briefing",
+      "highlight": "AI툴",
+      "title": "AI 인사이트: 금융, 선거, 보안",
+      "posted_at": "2026-04-26T21:28:26.811876+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17874167619468833",
+      "platform": "threads",
+      "content_type": "morning_briefing",
+      "highlight": "AI툴",
+      "title": "AI 인사이트: 금융, 선거, 보안",
+      "posted_at": "2026-04-26T21:28:26.811876+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
