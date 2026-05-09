@@ -5011,6 +5011,26 @@
       "posted_at": "2026-05-09T03:44:37.711972+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18153888016480572",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "글로벌 시장 3대 핵심 동향",
+      "posted_at": "2026-05-09T05:41:02.675354+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18099513647012669",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "글로벌 시장 3대 핵심 동향",
+      "posted_at": "2026-05-09T05:41:02.675354+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
