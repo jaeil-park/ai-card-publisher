@@ -4999,8 +4999,14 @@
       "highlight": "마켓",
       "title": "최신 시장 동향: 핵심 3가지",
       "posted_at": "2026-05-09T03:44:37.711972+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 2,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-05-10T22:43:35.910564+00:00"
     },
     {
       "media_id": "17950951943982933",
@@ -5019,8 +5025,14 @@
       "highlight": "마켓",
       "title": "글로벌 시장 3대 핵심 동향",
       "posted_at": "2026-05-09T05:41:02.675354+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-05-10T22:43:35.910564+00:00"
     },
     {
       "media_id": "18099513647012669",
@@ -5039,8 +5051,14 @@
       "highlight": "AI툴",
       "title": "AI 개발툴, 혁신 가속화의 세 축",
       "posted_at": "2026-05-09T07:32:15.717080+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-05-10T22:43:35.910564+00:00"
     },
     {
       "media_id": "17995454762778434",
@@ -5059,8 +5077,14 @@
       "highlight": "AI툴",
       "title": "AI, 법치와 안보 혁신 주도",
       "posted_at": "2026-05-09T10:13:05.404639+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-05-10T22:43:35.910564+00:00"
     },
     {
       "media_id": "17972607306020291",
@@ -5079,8 +5103,14 @@
       "highlight": "AI툴",
       "title": "AI, 일상을 바꾸다: 3가지 핵심",
       "posted_at": "2026-05-09T12:54:28.656890+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-05-10T22:43:35.910564+00:00"
     },
     {
       "media_id": "18046344224539025",
@@ -5099,8 +5129,14 @@
       "highlight": "AI툴",
       "title": "AI 시대, 한국의 핵심 변화",
       "posted_at": "2026-05-09T21:33:25.261286+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-05-10T22:43:35.910564+00:00"
     },
     {
       "media_id": "18132975871495607",
