@@ -8101,6 +8101,26 @@
       "posted_at": "2026-05-28T22:26:30.420722+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18102536764927113",
+      "platform": "instagram",
+      "content_type": "tech_trend",
+      "highlight": "AI툴",
+      "title": "뉴스 데이터 부재로 요약 불가",
+      "posted_at": "2026-05-29T01:56:03.065236+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "17970863688027841",
+      "platform": "threads",
+      "content_type": "tech_trend",
+      "highlight": "AI툴",
+      "title": "뉴스 데이터 부재로 요약 불가",
+      "posted_at": "2026-05-29T01:56:03.065236+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
