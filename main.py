@@ -24,7 +24,7 @@ _CTA_FACTS = {
     "dalle_prompt": "",
     "points": [
         {"subtitle": "팔로우하면 매일 받아볼 수 있어요", "source": "@jaeil.park"},
-        {"subtitle": "저장해두면 나중에 꺼내볼 수 있어요", "source": "AI·코인·증시"},
+        {"subtitle": "뉴스레터 · 더 깊은 인사이트", "source": "infralog.kr"},
         {"subtitle": "댓글로 궁금한 주제를 알려주세요", "source": "매일 업데이트"},
     ],
 }
