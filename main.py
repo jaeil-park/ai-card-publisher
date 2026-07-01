@@ -18,6 +18,33 @@ from PIL import Image
 OUTPUT_DIR = Path("output")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
+# 모든 게시물 마지막에 삽입되는 팔로우 유도 CTA 슬라이드 데이터
+_CTA_FACTS = {
+    "title": "매일 AI 트렌드 📌",
+    "dalle_prompt": "",
+    "points": [
+        {"subtitle": "팔로우하면 매일 받아볼 수 있어요", "source": "@jaeil.park"},
+        {"subtitle": "저장해두면 나중에 꺼내볼 수 있어요", "source": "AI·코인·증시"},
+        {"subtitle": "댓글로 궁금한 주제를 알려주세요", "source": "매일 업데이트"},
+    ],
+}
+
+
+def _append_cta_slide(image_urls: list, bg_path: Path) -> list:
+    """CTA 슬라이드를 렌더링해 image_urls 끝에 추가한다."""
+    try:
+        print("\n[CTA] 📌 팔로우 유도 슬라이드 생성 중...")
+        cta_png = render_card_png(_CTA_FACTS, bg_image_path=bg_path)
+        cta_path = OUTPUT_DIR / "cta_card.png"
+        cta_path.write_bytes(cta_png)
+        cta_url = upload_image(Image.open(cta_path))
+        image_urls.append(cta_url)
+        print("[CTA] ✅ CTA 슬라이드 추가 완료")
+    except Exception as e:
+        print(f"[CTA] ⚠️ CTA 슬라이드 생성 실패 (계속 진행): {e}")
+    return image_urls
+
+
 def main():
     # 1. 토큰 만료 체크
     print("🔍 토큰 상태 확인 중...")
@@ -54,6 +81,10 @@ def main():
             image_urls.append(upload_image(card_pil))
             print(f"  ✅ 슬라이드 {i+1}/{len(all_sections)} 업로드 완료")
 
+        # CTA 슬라이드 — 마지막 배경 재사용 (DALL-E 비용 없음)
+        last_bg = OUTPUT_DIR / f"bg_weekly_{len(all_sections)-1}.png"
+        image_urls = _append_cta_slide(image_urls, last_bg)
+
         facts = all_sections[0]
     else:
         print("\n[1/5] 🤖 GPT-4o로 이미지용 팩트 추출 중...")
@@ -71,6 +102,7 @@ def main():
         final_image_path.write_bytes(png)
         final_image_pil = Image.open(final_image_path)
         image_urls = [upload_image(final_image_pil)]
+        image_urls = _append_cta_slide(image_urls, bg_path)
 
     # 캡션 생성
     print("\n[4/5] ✍️  GPT-4o로 SNS 본문 생성 중...")
