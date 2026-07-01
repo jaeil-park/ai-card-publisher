@@ -13269,6 +13269,26 @@
       "posted_at": "2026-07-01T02:05:53.479699+00:00",
       "insights": {},
       "insights_at": null
+    },
+    {
+      "media_id": "18116553013849802",
+      "platform": "instagram",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 시황 핵심 분석",
+      "posted_at": "2026-07-01T05:33:13.959775+00:00",
+      "insights": {},
+      "insights_at": null
+    },
+    {
+      "media_id": "18174938449420927",
+      "platform": "threads",
+      "content_type": "market_update",
+      "highlight": "마켓",
+      "title": "시장 시황 핵심 분석",
+      "posted_at": "2026-07-01T05:33:13.959775+00:00",
+      "insights": {},
+      "insights_at": null
     }
   ]
 }
