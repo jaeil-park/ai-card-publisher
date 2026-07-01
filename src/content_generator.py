@@ -29,12 +29,13 @@ def generate_facts(theme: str, news: list) -> dict:
 당신은 데이터 저널리스트입니다. 주어진 최신 뉴스 데이터에서 가장 중요한 핵심 팩트 3가지를 추출하여, Glassmorphism 카드뉴스 '이미지'에 삽입할 짧은 텍스트를 JSON 형식으로 요약하세요.
 
 [요구사항]
-1. title: 전체 내용을 아우르는 간결하고 강력한 제목 (20자 이내).
+1. title: 전체 내용을 아우르는 간결하고 강력한 제목 (20자 이내). 숫자나 강렬한 단어 포함 권장.
 2. points: 반드시 3개 항목.
-   - subtitle: 각 팩트의 소주제. 매우 짧고 강렬하게, 1~2줄 이내 (25자 이내).
+   - subtitle: 각 팩트의 소주제. 가능하면 구체적인 수치·퍼센트·금액·날짜를 포함하여 1~2줄 이내 (28자 이내).
+     예시) "엔비디아 주가 +8%, 신고가 경신" / "ChatGPT 월 사용자 5억 돌파" / "비트코인 10만달러 재돌파"
    - source: 정보 출처 (10자 이내, 예: 'OpenAI', 'CoinGecko').
 3. dalle_prompt: 주제와 직접 연관된 photorealistic 뉴스 사진 장면 묘사 (영문, 100자 이내).
-4. 엄격한 JSON 형식만 반환 (설명 없이).
+4. 엄격한 JSON 형식만 반환 (설명 없이). 숫자가 없는 팩트는 사용하지 마세요.
 
 [입력 데이터]
 테마: {theme}
@@ -86,8 +87,14 @@ def generate_weekly_sections(data: dict) -> list[dict]:
 
 
 def generate_caption(facts: dict, news: list) -> str:
+    from datetime import datetime
+    today = datetime.now().strftime("%Y년 %m월 %d일")
+
     prompt = f"""
 당신은 SNS 콘텐츠 마케터입니다. 주어진 카드뉴스 팩트와 원본 기사를 바탕으로, 사용자의 참여를 유도하는 풍성한 Instagram/Threads 캡션(본문)을 작성하세요.
+
+오늘 날짜: {today}
+※ 연도·날짜 언급 시 반드시 오늘 날짜 기준으로 작성하세요. 절대 과거 연도(2024년 등)를 쓰지 마세요.
 
 [요구사항]
 1. 첫 문단 (Hook): 사용자의 시선을 사로잡는 흥미로운 질문이나 놀라운 사실로 시작.

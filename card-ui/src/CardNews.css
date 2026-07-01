@@ -28,15 +28,14 @@
   background-position: center;
 }
 
-/* 그라데이션 오버레이 */
 .card__gradient {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,0.10) 0%,
-    rgba(0,0,0,0.30) 40%,
-    rgba(0,0,0,0.80) 100%
+    rgba(0,0,0,0.25) 0%,
+    rgba(0,0,0,0.40) 35%,
+    rgba(0,0,0,0.85) 100%
   );
 }
 
@@ -46,97 +45,138 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 64px;
+  padding: 56px 64px 52px;
 }
 
+/* 상단 배지 바 */
+.card__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.card__category-badge {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #a5f3fc;
+  background: rgba(165, 243, 252, 0.12);
+  border: 1px solid rgba(165, 243, 252, 0.40);
+  border-radius: 999px;
+  padding: 6px 20px;
+  text-transform: uppercase;
+}
+
+.card__date-badge {
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 1px;
+}
+
+.card__weekly-badge {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #a5f3fc;
+  background: rgba(165, 243, 252, 0.12);
+  border: 1px solid rgba(165, 243, 252, 0.35);
+  border-radius: 999px;
+  padding: 6px 20px;
+  text-transform: uppercase;
+}
+
+.card__slide-indicator {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.50);
+  letter-spacing: 2px;
+}
+
+/* 제목 */
 .card__title {
-  font-size: 56px;
+  font-size: 54px;
   font-weight: 800;
   line-height: 1.3;
   text-align: center;
-  margin-top: 24px;
-  margin-bottom: 48px;
+  margin-bottom: 44px;
   letter-spacing: -0.5px;
   word-break: keep-all;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 16px rgba(0,0,0,0.9);
+  background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* 포인트 카드 리스트 */
 .card__points {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 28px;
+  gap: 24px;
 }
 
-/* iOS Glassmorphism */
+/* iOS Glassmorphism 카드 */
 .card__glass {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  border-radius: 2rem;
-  padding: 36px 40px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.30);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-left: 3px solid rgba(165, 243, 252, 0.70);
+  border-radius: 1.6rem;
+  padding: 30px 36px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+  transition: transform 0.2s;
+}
+
+.card__glass-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.card__badge-num {
+  font-size: 38px;
+  font-weight: 800;
+  color: #a5f3fc;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+  text-shadow: 0 0 16px rgba(165, 243, 252, 0.5);
 }
 
 .card__subtitle {
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 700;
-  color: #a5f3fc;  /* cyan-200 */
+  color: #ffffff;
   line-height: 1.4;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   word-break: keep-all;
   text-shadow: 0 1px 6px rgba(0,0,0,0.5);
 }
 
 .card__source {
-  font-size: 22px;
-  color: rgba(255,255,255,0.65);
-  text-align: right;
+  font-size: 20px;
+  color: rgba(165, 243, 252, 0.70);
   font-weight: 400;
 }
 
+/* 푸터 */
 .card__footer {
-  margin-top: 32px;
+  margin-top: 28px;
   text-align: center;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  color: rgba(255,255,255,0.35);
-  letter-spacing: 4px;
-  text-transform: uppercase;
+  color: rgba(255,255,255,0.40);
+  letter-spacing: 2px;
 }
 
 .card__footer span {
-  margin: 0 12px;
+  margin: 0 10px;
   font-weight: 300;
-}
-
-/* 주간 리포트 상단 바 */
-.card__topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.card__weekly-badge {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: #a5f3fc;
-  text-transform: uppercase;
-  background: rgba(165, 243, 252, 0.12);
-  border: 1px solid rgba(165, 243, 252, 0.35);
-  border-radius: 999px;
-  padding: 6px 20px;
-}
-
-.card__slide-indicator {
-  font-size: 22px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.50);
-  letter-spacing: 2px;
 }
 
 /* 브라우저 미리보기 자동 축소 */
@@ -148,118 +188,4 @@
 .card-preview-wrapper .card {
   transform-origin: top left;
   transform: scale(calc(min(100vw, 1080px) / 1080));
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.card {
-  position: relative;
-  width: 1080px;
-  height: 1080px;
-  overflow: hidden;
-  font-family: 'Nanum Gothic', sans-serif;
-  background: #14141e;
-}
-
-.card__bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-}
-
-/* 전체 어두운 필터 */
-.card__bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.30);
-}
-
-/* 하단 패널 그라데이션 */
-.card__panel {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 52%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.80) 30%,
-    rgba(0, 0, 0, 0.88) 100%
-  );
-}
-
-/* 상단 배지 바 */
-.card__topbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  z-index: 10;
-}
-
-.card__badge {
-  font-size: 26px;
-  font-weight: 700;
-  color: #50dcff;
-  letter-spacing: 1px;
-}
-
-.card__date {
-  font-size: 24px;
-  color: rgba(220, 220, 220, 0.9);
-}
-
-/* 텍스트 영역 */
-.card__content {
-  position: absolute;
-  bottom: 56px;
-  left: 56px;
-  right: 56px;
-  z-index: 10;
-}
-
-.card__title {
-  font-size: 60px;
-  font-weight: 800;
-  color: #ffdc00;
-  line-height: 1.25;
-  margin-bottom: 28px;
-  word-break: keep-all;
-}
-
-.card__summary {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.card__summary-line {
-  font-size: 32px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.90);
-  line-height: 1.5;
-  word-break: keep-all;
-}
-
-/* 워터마크 */
-.card__watermark {
-  position: absolute;
-  bottom: 18px;
-  right: 28px;
-  font-size: 22px;
-  color: rgba(180, 180, 180, 0.65);
-  z-index: 10;
 }

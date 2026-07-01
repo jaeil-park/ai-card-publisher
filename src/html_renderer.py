@@ -46,7 +46,7 @@ HTML_TEMPLATE = """
         </div>
 
         <div class="mt-8 text-center text-2xl font-bold text-white/40 tracking-widest uppercase">
-            GEMS <span class="mx-2 font-light">|</span> @GEMS.OFFICIAL
+            @jaeil.park <span class="mx-2 font-light">|</span> AI·코인·증시
         </div>
     </div>
 </body>
