@@ -7,16 +7,6 @@ from google.genai import types
 from datetime import datetime, timedelta, date
 
 
-# ── 콘텐츠 타입 스케줄 (KST 기준) ──────────────────────────
-CONTENT_SCHEDULE = {
-    6:  "morning_briefing",  # ☀️ 아침 AI 뉴스 브리핑
-    9:  "tech_trend",        # 💻 GitHub + HN 개발 트렌드
-    12: "market_update",     # 📊 코인 + 글로벌 증시
-    15: "ai_tools",          # 🛠️ AI 개발툴 비교/팁
-    18: "product_hunt",      # 🚀 AI 신제품 발견
-    21: "ai_tips",           # 🧠 AI 비서 실전 팁
-}
-
 CONTENT_META = {
     "morning_briefing": {"emoji": "☀️", "label": "아침 AI 브리핑",  "bg_style": "bright sunrise digital newsroom, blue gold gradient"},
     "tech_trend":       {"emoji": "💻", "label": "개발 트렌드",     "bg_style": "dark coding terminal, green matrix neon, github vibes"},
@@ -29,14 +19,25 @@ CONTENT_META = {
 
 # ── 콘텐츠 타입 자동 결정 ──────────────────────────────────
 
+# 2026-07 개편: 크론이 3회/일 → 1회/일로 축소되면서 시간대 기반 분기를
+# 요일 기반 로테이션으로 전환. 매일 같은 시각에 게시되므로 콘텐츠 타입까지
+# 고정되면 "반복적 콘텐츠" 스팸 신호가 재발하기 때문
+# (Threads 계정정지 사고 원인 중 하나 — rate_limiter.py 주석 참조).
+_WEEKDAY_ROTATION = [
+    "morning_briefing",  # 월 (0) ☀️ 아침 AI 브리핑
+    "tech_trend",        # 화 (1) 💻 개발 트렌드
+    "market_update",     # 수 (2) 📊 시장 시황
+    "ai_tools",          # 목 (3) 🛠️ AI 개발툴
+    "product_hunt",      # 금 (4) 🚀 AI 신제품
+    "ai_tips",           # 토 (5) 🧠 AI 비서 팁
+    "morning_briefing",  # 일 (6) ☀️ (weekly_review 콘텐츠 타입 부재로 브리핑 재사용)
+]
+
+
 def get_content_type() -> str:
-    """현재 KST 시각 기준으로 콘텐츠 타입 자동 결정"""
-    hour = (datetime.utcnow() + timedelta(hours=9)).hour
-    # 정각 매핑, 사이 시간은 가장 가까운 이전 슬롯
-    for h in sorted(CONTENT_SCHEDULE.keys(), reverse=True):
-        if hour >= h:
-            return CONTENT_SCHEDULE[h]
-    return "morning_briefing"
+    """현재 요일 기준으로 콘텐츠 타입 자동 결정 (1일 1회 게시 체제)."""
+    weekday = (datetime.utcnow() + timedelta(hours=9)).weekday()  # 0=월 … 6=일
+    return _WEEKDAY_ROTATION[weekday]
 
 
 # ── 데이터 수집 함수들 ─────────────────────────────────────

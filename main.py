@@ -13,6 +13,7 @@ from src.image_compositor import upload_image
 from src.analytics import record_post, notify_posted
 from src.poster import post_instagram_carousel, post_threads_carousel
 from src.highlight_manager import get_highlight, create_story_cover, print_highlight_guide
+from src.rate_limiter import check_rate_limit, check_content_policy
 from PIL import Image
 
 OUTPUT_DIR = Path("output")
@@ -119,13 +120,29 @@ def main():
         threads_caption += "\n\n[관련 링크]\n" + "\n".join(source_links)
 
     # Instagram & Threads 포스팅
+    # 게시 전 도배 방지(쿨다운·일일한도) + 참여유도 문구 검사 —
+    # 2026-07 Threads 계정정지 사고 이후 추가 (Meta 스팸 정책 대응)
     results = {}
-    ig_result = post_instagram_carousel(image_urls, caption, hashtags)
-    th_result = post_threads_carousel(image_urls, threads_caption, hashtags, "TECHNOLOGY")
-    if ig_result.get("id"):
-        results["instagram"] = ig_result
-    if th_result.get("id"):
-        results["threads"]   = th_result
+
+    policy_ok, policy_reason = check_content_policy(caption)
+    if not policy_ok:
+        print(f"🚫 게시 차단 (콘텐츠 정책): {policy_reason}")
+    else:
+        ig_ok, ig_reason = check_rate_limit("instagram")
+        if ig_ok:
+            ig_result = post_instagram_carousel(image_urls, caption, hashtags)
+            if ig_result.get("id"):
+                results["instagram"] = ig_result
+        else:
+            print(f"⏭️  Instagram 게시 스킵: {ig_reason}")
+
+        th_ok, th_reason = check_rate_limit("threads")
+        if th_ok:
+            th_result = post_threads_carousel(image_urls, threads_caption, hashtags, "TECHNOLOGY")
+            if th_result.get("id"):
+                results["threads"] = th_result
+        else:
+            print(f"⏭️  Threads 게시 스킵: {th_reason}")
 
     # 8. 결과 기록 및 알림
     if results:

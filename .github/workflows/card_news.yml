@@ -2,11 +2,11 @@ name: 📱 SNS Card News Auto Post
 
 on:
   schedule:
-    # 릴스(07:30/13:00/20:30 KST)와 겹치지 않게 30분~1시간 간격 유지
-    - cron: '0 0 * * *'    # 09:00 KST 🏢  빅테크/AI 뉴스
-    - cron: '0 6 * * *'    # 15:00 KST 🚀  AI 신제품/시장 시황
-    - cron: '0 12 * * *'   # 21:00 KST 🧠  AI 팁 / 바이브코딩
-    - cron: '0 11 * * 0'   # 20:00 KST 일요일 📅  한 주 핵심 정리
+    # 2026-07 2차 개편: 3회/일(+일요일 특집) → 1회/일로 재조정. Threads 계정
+    # 정지 사고 이후 고빈도 게시 위험을 근본적으로 제거하기 위함. 콘텐츠
+    # 타입은 요일별 로테이션으로 결정(src/trend_fetcher.py get_content_type()).
+    # 릴스(ai_trend_publisher, 07:30/20:30 KST)와 겹치지 않게 간격 유지.
+    - cron: '0 0 * * *'    # 09:00 KST — 1일 1회
   workflow_dispatch:
 
 jobs:
