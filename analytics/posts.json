@@ -14437,8 +14437,14 @@
       "highlight": "AI툴",
       "title": "AI 개발, 3가지 혁신 팩트",
       "posted_at": "2026-07-16T01:19:18.782044+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-17T22:54:52.215425+00:00"
     },
     {
       "media_id": "17898154335499859",
