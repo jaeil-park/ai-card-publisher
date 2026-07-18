@@ -14463,8 +14463,14 @@
       "highlight": "AI툴",
       "title": "AI 대전환, 3가지 핵심 팩트",
       "posted_at": "2026-07-17T01:23:09.781628+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-18T22:55:58.822779+00:00"
     },
     {
       "media_id": "18080768024267691",
