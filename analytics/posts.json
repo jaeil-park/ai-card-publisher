@@ -14515,8 +14515,14 @@
       "highlight": "AI툴",
       "title": "AI 전쟁, 3가지 핵심 팩트",
       "posted_at": "2026-07-19T01:19:38.898470+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-20T23:05:09.198929+00:00"
     },
     {
       "media_id": "17925191352373074",
