@@ -14567,8 +14567,14 @@
       "highlight": "AI툴",
       "title": "미래 기술, 3대 핵심 동력!",
       "posted_at": "2026-07-21T01:19:57.361840+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-22T23:09:55.337417+00:00"
     },
     {
       "media_id": "18057098087540963",
