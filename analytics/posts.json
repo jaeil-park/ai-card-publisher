@@ -14593,8 +14593,14 @@
       "highlight": "마켓",
       "title": "글로벌 시장 3대 변수",
       "posted_at": "2026-07-22T01:18:28.382263+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-23T23:02:56.574940+00:00"
     },
     {
       "media_id": "18125228419737579",
