@@ -14645,8 +14645,14 @@
       "highlight": "AI툴",
       "title": "AI 도약! 3대 기업 변화",
       "posted_at": "2026-07-24T01:21:30.499668+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-25T22:59:28.253993+00:00"
     },
     {
       "media_id": "18326516725258311",
