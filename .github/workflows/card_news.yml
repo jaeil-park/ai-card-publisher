@@ -24,7 +24,7 @@ jobs:
       - name: 🔐 Load ENV
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
-          echo "${{ secrets.COUPANG_API_KEYS }}" >> .env
+          echo "${{ secrets.COUPANG_ACCESS_KEYS }}" >> .env
 
       - uses: actions/setup-node@v4
         with:
