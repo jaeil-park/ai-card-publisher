@@ -22,7 +22,9 @@ jobs:
           python-version: '3.11'
 
       - name: 🔐 Load ENV
-        run: echo "${{ secrets.ENV_FILE }}" > .env
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+          echo "${{ secrets.COUPANG_API_KEYS }}" >> .env
 
       - uses: actions/setup-node@v4
         with:

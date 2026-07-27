@@ -14,6 +14,7 @@ CONTENT_META = {
     "ai_tools":         {"emoji": "🛠️", "label": "AI 개발툴",      "bg_style": "futuristic IDE interface, purple cyan glow, tool icons"},
     "product_hunt":     {"emoji": "🚀", "label": "AI 신제품",       "bg_style": "product launch stage, orange white spotlight, startup energy"},
     "ai_tips":          {"emoji": "🧠", "label": "AI 비서 팁",      "bg_style": "mind map neural network, teal purple gradient, productivity"},
+    "weekly_picks":     {"emoji": "🛍️", "label": "주간 추천템",     "bg_style": "cozy home shopping flatlay, warm pastel gradient, product photography"},
 }
 
 
@@ -30,7 +31,7 @@ _WEEKDAY_ROTATION = [
     "ai_tools",          # 목 (3) 🛠️ AI 개발툴
     "product_hunt",      # 금 (4) 🚀 AI 신제품
     "ai_tips",           # 토 (5) 🧠 AI 비서 팁
-    "morning_briefing",  # 일 (6) ☀️ (weekly_review 콘텐츠 타입 부재로 브리핑 재사용)
+    "weekly_picks",      # 일 (6) 🛍️ 주간 추천템 (데이터랩 급상승 카테고리 + 쿠팡 실제 상품)
 ]
 
 
@@ -195,6 +196,108 @@ def fetch_product_hunt() -> list[dict]:
         return []
 
 
+# ── 주간 추천템 (네이버 데이터랩 쇼핑인사이트 + 쿠팡 파트너스) ──
+#
+# 데이터랩 쇼핑인사이트 공식 API(client_id/secret)는 "순위 발견" API가 아니라
+# 미리 지정한 카테고리들의 상대적 검색 추이 비교만 제공한다. 따라서:
+#   1) 데이터랩으로 지난주 대비 이번 주 검색 비율이 가장 많이 오른 카테고리를 탐지
+#   2) 그 카테고리명을 키워드로 쿠팡 파트너스 공식 검색 API를 호출해 실제 판매 중인
+#      상품(로켓배송 우선)을 후보로 선정
+# 이렇게 "어떤 카테고리가 뜨는지"는 데이터랩이, "그 안의 구체적 상품"은 쿠팡 실제
+# 검색 결과가 담당하도록 역할을 분리한다.
+_SHOPPING_CATEGORIES = [
+    ("패션의류", "50000000"),
+    ("화장품/미용", "50000002"),
+    ("디지털/가전", "50000003"),
+    ("가구/인테리어", "50000004"),
+    ("식품", "50000006"),
+    ("스포츠/레저", "50000007"),
+    ("생활/건강", "50000008"),
+    ("여가/생활편의", "50000009"),
+]
+
+
+def fetch_trending_shopping_category() -> dict | None:
+    """데이터랩 쇼핑인사이트: 최근 7일 평균 검색비율이 이전 7일 대비 가장 많이 오른 카테고리.
+
+    API 제약: category 배열은 요청당 최대 3개까지만 허용되므로(초과 시 400
+    TypeError) 3개씩 나눠 여러 번 호출한 뒤 결과를 합산한다.
+    """
+    client_id = os.environ.get("NAVER_CLIENT_ID", "")
+    client_secret = os.environ.get("NAVER_CLIENT_SECRET", "")
+    if not client_id or not client_secret:
+        print("⚠️ NAVER_CLIENT_ID/SECRET 미설정 — 쇼핑 트렌드 탐지 스킵")
+        return None
+
+    today = date.today()
+    start = today - timedelta(days=14)
+    headers = {
+        "X-Naver-Client-Id": client_id,
+        "X-Naver-Client-Secret": client_secret,
+        "Content-Type": "application/json",
+    }
+
+    all_results = []
+    for i in range(0, len(_SHOPPING_CATEGORIES), 3):
+        chunk = _SHOPPING_CATEGORIES[i:i + 3]
+        try:
+            res = requests.post(
+                "https://openapi.naver.com/v1/datalab/shopping/categories",
+                headers=headers,
+                json={
+                    "startDate": start.isoformat(),
+                    "endDate": today.isoformat(),
+                    "timeUnit": "date",
+                    "category": [{"name": name, "param": [code]} for name, code in chunk],
+                },
+                timeout=10,
+            )
+            res.raise_for_status()
+            all_results.extend(res.json().get("results", []))
+        except Exception as e:
+            print(f"⚠️ 데이터랩 쇼핑인사이트 수집 실패({[n for n, _ in chunk]}): {e}")
+
+    best = None
+    for r in all_results:
+        data_points = r.get("data", [])
+        if len(data_points) < 8:
+            continue
+        recent = [d["ratio"] for d in data_points[-7:]]
+        prior = [d["ratio"] for d in data_points[-14:-7]]
+        if not prior or sum(prior) == 0:
+            continue
+        growth = (sum(recent) / len(recent)) / (sum(prior) / len(prior)) - 1
+        if best is None or growth > best["growth"]:
+            best = {"name": r.get("title", ""), "growth": growth}
+
+    if best:
+        print(f"📈 급상승 카테고리: {best['name']} ({best['growth']*100:+.1f}%)")
+    return best
+
+
+def fetch_weekly_shopping_picks() -> list[dict]:
+    """급상승 카테고리 탐지 → 쿠팡 공식 검색 API로 실제 상품 후보 선정."""
+    from src.coupang_client import search_products
+
+    category = fetch_trending_shopping_category()
+    category_name = category["name"] if category else _SHOPPING_CATEGORIES[0][0]
+    growth_note = f"전주 대비 검색량 {category['growth']*100:+.0f}%" if category else "이번 주 관심 카테고리"
+
+    products = search_products(category_name, limit=6)
+    rocket_first = sorted(products, key=lambda p: not p.get("is_rocket", False))[:5]
+
+    if not rocket_first:
+        return [{"title": f"{category_name} 카테고리 인기 급상승", "snippet": growth_note}]
+
+    return [
+        {
+            "title": p["name"][:40],
+            "snippet": f"{p['price']:,}원 · {'로켓배송' if p['is_rocket'] else '일반배송'} · {category_name} {growth_note}",
+        }
+        for p in rocket_first
+    ]
+
+
 # ── 콘텐츠 타입별 데이터 수집 ─────────────────────────────
 
 def collect_data(content_type: str) -> dict:
@@ -217,6 +320,9 @@ def collect_data(content_type: str) -> dict:
 
     elif content_type == "ai_tips":
         return {"news": fetch_ai_news()[:3]}
+
+    elif content_type == "weekly_picks":
+        return {"news": fetch_weekly_shopping_picks()}
 
     return {}
 

@@ -112,6 +112,9 @@ def main():
     caption = caption_parts[0].strip()
     hashtags = f"#{caption_parts[1].strip()}" if len(caption_parts) > 1 else "#AI #FinTech #Gems"
 
+    if content_type == "weekly_picks":
+        caption += "\n\n🛒 상세 제품 확인은\nhttps://coupang.infralog.kr"
+
     # 포스팅
     print("\n[5/5] ☁️  SNS 포스팅 중...")
     source_links = [n["link"] for n in news_items if n.get("link")][:2]
