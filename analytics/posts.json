@@ -14723,8 +14723,14 @@
       "highlight": "AI툴",
       "title": "K-AI, 100억 달러 투자 광풍",
       "posted_at": "2026-07-27T01:30:28.132430+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-28T23:06:04.573928+00:00"
     },
     {
       "media_id": "18165934426456079",
