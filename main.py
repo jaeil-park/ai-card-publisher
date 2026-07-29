@@ -6,7 +6,7 @@ load_dotenv()
 
 from src.token_manager import check_and_refresh_tokens
 from src.trend_fetcher import get_content_type, collect_data, CONTENT_META
-from src.content_generator import generate_facts, generate_caption, generate_weekly_sections
+from src.content_generator import generate_facts, generate_caption, generate_weekly_sections, generate_topic_tag
 from src.background_maker import generate_background
 from src.card_generator import render_card_png
 from src.image_compositor import upload_image
@@ -141,7 +141,8 @@ def main():
 
         th_ok, th_reason = check_rate_limit("threads")
         if th_ok:
-            th_result = post_threads_carousel(image_urls, threads_caption, hashtags, "TECHNOLOGY")
+            topic_tag = generate_topic_tag(title)
+            th_result = post_threads_carousel(image_urls, threads_caption, hashtags, topic_tag)
             if th_result.get("id"):
                 results["threads"] = th_result
         else:

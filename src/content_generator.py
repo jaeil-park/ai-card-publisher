@@ -69,6 +69,34 @@ def generate_facts(theme: str, news: list) -> dict:
         }
 
 
+def generate_topic_tag(title: str) -> str:
+    """
+    Threads topic_tag는 고정 카테고리 enum이 아니라 자유 텍스트(1~50자,
+    마침표·앰퍼샌드 금지)다. 지금까지 "TECHNOLOGY" 고정값을 썼는데, 카드
+    제목에 맞는 짧고 후킹성 있는 태그를 매번 새로 생성한다.
+    """
+    fallback = "AI트렌드"
+    prompt = f"""당신은 한국 Threads(스레드) 콘텐츠 큐레이터입니다.
+카드뉴스 제목을 보고 이 글의 주제를 나타내는 아주 짧고 후킹성 있는 토픽 태그를 1개 만드세요.
+
+[요구사항]
+- 2~8자 이내의 한국어 명사/짧은 구 (예: AI트렌드, 코인시황, 개발툴, 주간추천템)
+- 마침표(.)나 앰퍼샌드(&) 사용 금지, 공백 없이 붙여쓰기
+- 반드시 JSON만 응답: {{"tag": "AI트렌드"}}
+
+[제목]
+{title}
+"""
+    try:
+        data = _generate_json(prompt)
+        tag = str(data.get("tag", "")).strip()
+        tag = tag.replace(".", "").replace("&", "").replace(" ", "")[:50]
+        return tag or fallback
+    except Exception as e:
+        print(f"⚠️ topic_tag 생성 실패: {e}")
+        return fallback
+
+
 def generate_weekly_sections(data: dict) -> list[dict]:
     sections = [
         {"theme": "이번 주 AI·테크 핵심",  "items": data.get("news", [])},
