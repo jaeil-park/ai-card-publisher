@@ -14,6 +14,36 @@ def _truncate_for_threads(caption: str) -> str:
     return caption
 
 
+def _post_threads_container(user_id: str, token: str, params: dict, max_retries: int = 3) -> str:
+    """Threads 미디어 컨테이너 생성 (단일 이미지/캐러셀 슬라이드 공용).
+
+    'Media download has failed'(OAuthException code=1, subcode=2207052)는 URL이
+    멀쩡해도 Meta 크롤러가 간헐적으로 못 가져오는 걸로 알려진 문제(Meta 개발자 커뮤니티에
+    다수 보고됨) — 같은 실행에서 다른 슬라이드는 성공하고 특정 슬라이드만 실패하는
+    패턴이 그 증거. 재시도로 대부분 해결된다.
+    """
+    last_res = None
+    for attempt in range(1, max_retries + 1):
+        res = requests.post(
+            "https://graph.threads.net/v1.0/{}/threads".format(user_id),
+            params=params, timeout=30
+        )
+        if res.ok:
+            return res.json()["id"]
+
+        last_res = res
+        is_transient_fetch_error = res.status_code == 400 and "2207052" in res.text
+        if is_transient_fetch_error and attempt < max_retries:
+            wait = 8 * attempt
+            print(f"  ⚠️ 미디어 페치 실패(일시적, subcode 2207052) — {wait}초 후 재시도 ({attempt}/{max_retries})")
+            time.sleep(wait)
+            continue
+        break
+
+    print(f"❌ Threads 컨테이너 오류: {last_res.status_code} - {last_res.text}")
+    last_res.raise_for_status()
+
+
 def _add_comment(platform: str, media_id: str, text: str, user_id: str, token: str):
     """게시물에 첫 댓글 추가 (해시태그 분리 → 도달률 향상)"""
     try:
@@ -143,14 +173,7 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
                   "text": full_caption, "access_token": token}
         if topic_tag:
             params["topic_tag"] = topic_tag
-        res = requests.post(
-            f"https://graph.threads.net/v1.0/{user_id}/threads",
-            params=params, timeout=30
-        )
-        if not res.ok:
-            print(f"❌ Threads media container 오류: {res.status_code} - {res.text}")
-        res.raise_for_status()
-        container_id = res.json()["id"]
+        container_id = _post_threads_container(user_id, token, params)
         time.sleep(35)
         result = requests.post(
             f"https://graph.threads.net/v1.0/{user_id}/threads_publish",
@@ -168,17 +191,12 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
     print(f"🧵 Threads 슬라이드 컨테이너 생성 중... ({len(image_urls)}장)")
     child_ids = []
     for i, url in enumerate(image_urls):
-        res = requests.post(
-            f"https://graph.threads.net/v1.0/{user_id}/threads",
-            params={"media_type": "IMAGE", "image_url": url,
-                    "is_carousel_item": "true", "access_token": token},
-            timeout=30
-        )
-        if not res.ok:
-            print(f"❌ 슬라이드 {i+1} 컨테이너 오류: {res.status_code} - {res.text}")
-        res.raise_for_status()
-        child_ids.append(res.json()["id"])
-        print(f"  슬라이드 {i+1}/{len(image_urls)}: {res.json()['id']}")
+        cid = _post_threads_container(user_id, token, {
+            "media_type": "IMAGE", "image_url": url,
+            "is_carousel_item": "true", "access_token": token,
+        })
+        child_ids.append(cid)
+        print(f"  슬라이드 {i+1}/{len(image_urls)}: {cid}")
         time.sleep(2)
 
     carousel_params = {"media_type": "CAROUSEL", "children": ",".join(child_ids),
@@ -186,14 +204,7 @@ def post_threads_carousel(image_urls: list[str], caption: str, hashtags: str, to
     if topic_tag:
         carousel_params["topic_tag"] = topic_tag
         print(f"🏷️  Threads topic_tag: {topic_tag}")
-    res = requests.post(
-        f"https://graph.threads.net/v1.0/{user_id}/threads",
-        params=carousel_params, timeout=30
-    )
-    if not res.ok:
-        print(f"❌ Threads carousel container 오류: {res.status_code} - {res.text}")
-    res.raise_for_status()
-    container_id = res.json()["id"]
+    container_id = _post_threads_container(user_id, token, carousel_params)
     print(f"🧵 Threads carousel container: {container_id}")
 
     time.sleep(35)
