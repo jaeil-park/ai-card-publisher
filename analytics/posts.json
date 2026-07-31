@@ -14775,8 +14775,14 @@
       "highlight": "AI툴",
       "title": "AI 개발 혁명! 3가지 사실",
       "posted_at": "2026-07-30T01:13:19.327785+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 1,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-07-31T23:08:57.127496+00:00"
     },
     {
       "media_id": "17929257963363260",
