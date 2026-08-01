@@ -14801,8 +14801,14 @@
       "highlight": "AI툴",
       "title": "AI 혁신! 3대 글로벌 협력",
       "posted_at": "2026-07-31T01:26:01.558637+00:00",
-      "insights": {},
-      "insights_at": null
+      "insights": {
+        "likes": 0,
+        "comments": 1,
+        "impressions": 0,
+        "reach": 0,
+        "saved": 0
+      },
+      "insights_at": "2026-08-01T22:59:30.711831+00:00"
     },
     {
       "media_id": "18065089037757516",
